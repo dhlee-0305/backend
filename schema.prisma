@@ -17,6 +17,8 @@ enum BookStatus {
   READING   // 읽는 중
   DONE      // 읽기 완료
   EXCLUDED  // 읽기 제외
+  SOLD      // 판매
+  DONATED   // 기부
 }
 
 enum MemoType {

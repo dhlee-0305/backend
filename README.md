@@ -38,7 +38,7 @@ CREATE DATABASE book_manager CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```env
 DATABASE_URL="mysql://root:your_password@localhost:3306/book_manager"
 PORT=4000
-CLIENT_URL=http://localhost:3000
+CLIENT_URL=http://localhost:4000
 ```
 
 ### 3. 패키지 설치
@@ -58,54 +58,7 @@ npm run dev
 
 ---
 
-## API 엔드포인트
-
-### 도서 (Books)
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/books` | 도서 목록 조회 |
-| GET | `/api/books/:id` | 도서 상세 조회 |
-| POST | `/api/books` | 도서 등록 |
-| PUT | `/api/books/:id` | 도서 수정 |
-| DELETE | `/api/books/:id` | 도서 삭제 |
-
-**목록 조회 쿼리 파라미터**
-- `status`: `OWNED` \| `READING` \| `DONE` \| `EXCLUDED`
-- `genre`: 장르명
-- `search`: 제목/저자/ISBN 검색
-- `sortBy`: 정렬 필드 (기본: `createdAt`)
-- `order`: `asc` \| `desc` (기본: `desc`)
-
-### 독서 기록 (Reading Log)
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/books/:bookId/reading-log` | 독서 기록 조회 |
-| PUT | `/api/books/:bookId/reading-log` | 독서 기록 저장/수정 |
-| DELETE | `/api/books/:bookId/reading-log` | 독서 기록 삭제 |
-
-**독서 기록 저장 요청 바디**
-| 필드 | 타입 | 설명 |
-|------|------|------|
-| `userName` | string | 읽은 사람 이름 |
-| `startDate` | string (ISO 날짜) | 읽기 시작일 |
-| `endDate` | string (ISO 날짜) | 읽기 완료일 |
-| `rating` | number (0.0~5.0) | 별점 |
-| `review` | string | 독후감 |
-
-### 메모 & 하이라이트 (Memos)
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/books/:bookId/memos` | 메모 목록 조회 |
-| POST | `/api/books/:bookId/memos` | 메모 등록 |
-| PUT | `/api/memos/:id` | 메모 수정 |
-| DELETE | `/api/memos/:id` | 메모 삭제 |
-
-### 통계 (Stats)
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/stats` | 전체 통계 조회 |
-
----
+> 전체 API 명세 및 비즈니스 규칙은 [docs/spec.md](docs/spec.md)를 참고하세요.
 
 ## 요청/응답 예시
 
