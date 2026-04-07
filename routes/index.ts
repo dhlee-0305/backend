@@ -3,7 +3,7 @@ import {
   getBooks, getBookById, createBook, updateBook, deleteBook,
 } from '../controllers/bookController';
 import {
-  getReadingLog, upsertReadingLog, deleteReadingLog,
+  getReadingLogs, createReadingLog, updateReadingLog, deleteReadingLog,
 } from '../controllers/readingLogController';
 import {
   getMemos, createMemo, updateMemo, deleteMemo,
@@ -20,9 +20,10 @@ router.put('/books/:id', updateBook);
 router.delete('/books/:id', deleteBook);
 
 // ─── 독서 기록 API ────────────────────────────────────────────
-router.get('/books/:bookId/reading-log', getReadingLog);
-router.put('/books/:bookId/reading-log', upsertReadingLog);
-router.delete('/books/:bookId/reading-log', deleteReadingLog);
+router.get('/books/:bookId/reading-logs', getReadingLogs);
+router.post('/books/:bookId/reading-logs', createReadingLog);
+router.put('/reading-logs/:id', updateReadingLog);
+router.delete('/reading-logs/:id', deleteReadingLog);
 
 // ─── 메모 & 하이라이트 API ────────────────────────────────────
 router.get('/books/:bookId/memos', getMemos);

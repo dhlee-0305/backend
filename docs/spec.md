@@ -10,7 +10,7 @@
 
 ### 모델 관계
 ```
-Book ─── 1:1 ── ReadingLog   (책 한 권당 독서 기록 하나)
+Book ─── 1:N ── ReadingLog   (책 한 권에 독서 기록 여러 개)
 Book ─── 1:N ── Memo         (책 한 권에 메모 여러 개)
 ```
 
@@ -50,7 +50,7 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 - 독자(userName), 독서 시작일 / 완료일 기록
 - 별점 (5점 만점) & 텍스트 리뷰 작성
 - 메모 & 하이라이트 구절 저장 (페이지 번호 포함)
-- 도서 1권당 독서 기록 1개 (없으면 생성, 있으면 수정 - upsert)
+- 도서 1권에 독서 기록 여러 개 등록 가능 (재독 지원)
 
 ### 3. 통계 대시보드
 
@@ -65,7 +65,7 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 
 - ISBN은 중복 등록 불가 (unique 제약)
 - Book 삭제 시 ReadingLog, Memo 함께 삭제 (Cascade)
-- ReadingLog는 bookId당 1개만 존재 (upsert 방식으로 저장)
+- ReadingLog는 bookId당 여러 개 등록 가능 (재독 기록 지원)
 - 별점은 0.0 ~ 5.0 범위 (소수점 1자리)
 - 메모 목록은 페이지 오름차순 → 등록일 내림차순 정렬
 
@@ -89,9 +89,10 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 
 | Method | URL | 설명 |
 |--------|-----|------|
-| GET | `/api/books/:bookId/reading-log` | 독서 기록 조회 |
-| PUT | `/api/books/:bookId/reading-log` | 독서 기록 저장/수정 |
-| DELETE | `/api/books/:bookId/reading-log` | 독서 기록 삭제 |
+| GET | `/api/books/:bookId/reading-logs` | 독서 기록 목록 조회 |
+| POST | `/api/books/:bookId/reading-logs` | 독서 기록 등록 |
+| PUT | `/api/reading-logs/:id` | 독서 기록 수정 |
+| DELETE | `/api/reading-logs/:id` | 독서 기록 삭제 |
 
 요청 바디: `userName`, `startDate`, `endDate`, `rating`, `review`
 

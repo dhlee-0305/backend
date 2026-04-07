@@ -1,41 +1,30 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 
-// ─── 독서 기록 조회 ───────────────────────────────────────────
-export const getReadingLog = async (req: Request, res: Response) => {
+// ─── 독서 기록 목록 조회 ──────────────────────────────────────
+export const getReadingLogs = async (req: Request, res: Response) => {
   try {
     const { bookId } = req.params;
 
-    const log = await prisma.readingLog.findUnique({
+    const logs = await prisma.readingLog.findMany({
       where: { bookId: Number(bookId) },
+      orderBy: { createdAt: 'desc' },
     });
 
-    if (!log) {
-      return res.status(404).json({ success: false, message: '독서 기록이 없습니다.' });
-    }
-
-    res.json({ success: true, data: log });
+    res.json({ success: true, data: logs, total: logs.length });
   } catch (error) {
     res.status(500).json({ success: false, message: '독서 기록 조회 실패', error });
   }
 };
 
-// ─── 독서 기록 생성/수정 (upsert) ────────────────────────────
-export const upsertReadingLog = async (req: Request, res: Response) => {
+// ─── 독서 기록 등록 ───────────────────────────────────────────
+export const createReadingLog = async (req: Request, res: Response) => {
   try {
     const { bookId } = req.params;
     const { userName, startDate, endDate, rating, review } = req.body;
 
-    const log = await prisma.readingLog.upsert({
-      where: { bookId: Number(bookId) },
-      update: {
-        userName,
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
-        rating,
-        review,
-      },
-      create: {
+    const log = await prisma.readingLog.create({
+      data: {
         bookId: Number(bookId),
         userName,
         startDate: startDate ? new Date(startDate) : null,
@@ -45,18 +34,44 @@ export const upsertReadingLog = async (req: Request, res: Response) => {
       },
     });
 
-    res.json({ success: true, data: log });
+    res.status(201).json({ success: true, data: log });
   } catch (error) {
-    res.status(500).json({ success: false, message: '독서 기록 저장 실패', error });
+    res.status(500).json({ success: false, message: '독서 기록 등록 실패', error });
+  }
+};
+
+// ─── 독서 기록 수정 ───────────────────────────────────────────
+export const updateReadingLog = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { userName, startDate, endDate, rating, review } = req.body;
+
+    const log = await prisma.readingLog.update({
+      where: { id: Number(id) },
+      data: {
+        userName,
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined,
+        rating,
+        review,
+      },
+    });
+
+    res.json({ success: true, data: log });
+  } catch (error: any) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({ success: false, message: '독서 기록을 찾을 수 없습니다.' });
+    }
+    res.status(500).json({ success: false, message: '독서 기록 수정 실패', error });
   }
 };
 
 // ─── 독서 기록 삭제 ───────────────────────────────────────────
 export const deleteReadingLog = async (req: Request, res: Response) => {
   try {
-    const { bookId } = req.params;
+    const { id } = req.params;
 
-    await prisma.readingLog.delete({ where: { bookId: Number(bookId) } });
+    await prisma.readingLog.delete({ where: { id: Number(id) } });
 
     res.json({ success: true, message: '독서 기록이 삭제되었습니다.' });
   } catch (error: any) {

@@ -22,7 +22,7 @@ export const getBooks = async (req: Request, res: Response) => {
     const books = await prisma.book.findMany({
       where,
       include: {
-        readingLog: { select: { rating: true, startDate: true, endDate: true } },
+        readingLogs: { select: { rating: true, startDate: true, endDate: true, userName: true } },
         _count: { select: { memos: true } },
       },
       orderBy: { [sortBy as string]: order },
@@ -42,7 +42,7 @@ export const getBookById = async (req: Request, res: Response) => {
     const book = await prisma.book.findUnique({
       where: { id: Number(id) },
       include: {
-        readingLog: true,
+        readingLogs: true,
         memos: { orderBy: { createdAt: 'desc' } },
       },
     });

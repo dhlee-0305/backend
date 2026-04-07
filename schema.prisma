@@ -42,7 +42,7 @@ model Book {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  readingLog   ReadingLog?
+  readingLogs  ReadingLog[]
   memos        Memo[]
 
   @@map("books")
@@ -53,7 +53,7 @@ model Book {
 // ─────────────────────────────────────────
 model ReadingLog {
   id        Int       @id @default(autoincrement())
-  bookId    Int       @unique
+  bookId    Int
   userName  String?   @db.VarChar(100)
   startDate DateTime?
   endDate   DateTime?
