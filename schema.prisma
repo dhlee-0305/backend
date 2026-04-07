@@ -1,0 +1,83 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────
+// 도서 상태 Enum
+// ─────────────────────────────────────────
+enum BookStatus {
+  OWNED     // 소장 중
+  READING   // 읽는 중
+  DONE      // 읽기 완료
+  EXCLUDED  // 읽기 제외
+}
+
+enum MemoType {
+  MEMO        // 메모
+  HIGHLIGHT   // 하이라이트 구절
+}
+
+// ─────────────────────────────────────────
+// 도서
+// ─────────────────────────────────────────
+model Book {
+  id           Int         @id @default(autoincrement())
+  title        String      @db.VarChar(255)
+  author       String      @db.VarChar(255)
+  publisher    String?     @db.VarChar(255)
+  isbn         String?     @unique @db.VarChar(20)
+  genre        String?     @db.VarChar(100)
+  coverUrl     String?     @db.VarChar(500)
+  purchaseDate DateTime?
+  status       BookStatus  @default(OWNED)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  readingLog   ReadingLog?
+  memos        Memo[]
+
+  @@map("books")
+}
+
+// ─────────────────────────────────────────
+// 독서 기록 (1도서 : 1기록)
+// ─────────────────────────────────────────
+model ReadingLog {
+  id        Int       @id @default(autoincrement())
+  bookId    Int       @unique
+  userName  String?   @db.VarChar(100)
+  startDate DateTime?
+  endDate   DateTime?
+  rating    Float?    // 0.0 ~ 5.0
+  review    String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("reading_logs")
+}
+
+// ─────────────────────────────────────────
+// 메모 & 하이라이트
+// ─────────────────────────────────────────
+model Memo {
+  id        Int       @id @default(autoincrement())
+  bookId    Int
+  page      Int?
+  content   String    @db.Text
+  type      MemoType  @default(MEMO)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("memos")
+}
