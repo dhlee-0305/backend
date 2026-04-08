@@ -36,7 +36,7 @@ INSERT INTO books (
     'Development',
     'https://example.com/test-clean-code.jpg',
     '2026-03-01 10:00:00',
-    'DONE',
+    'OWNED',
     NOW(3)
   ),
   (
@@ -47,7 +47,7 @@ INSERT INTO books (
     'Self Help',
     'https://example.com/test-atomic-habits.jpg',
     '2026-03-15 09:30:00',
-    'READING',
+    'OWNED',
     NOW(3)
   ),
   (
