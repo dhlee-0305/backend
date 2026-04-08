@@ -76,6 +76,7 @@ INSERT INTO books (
 INSERT INTO reading_logs (
   bookId,
   userName,
+  readStatus,
   startDate,
   endDate,
   rating,
@@ -85,6 +86,7 @@ INSERT INTO reading_logs (
   (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0001'),
     'tester_kim',
+    'READ',
     '2026-03-02 08:00:00',
     '2026-03-10 22:00:00',
     4.5,
@@ -94,6 +96,7 @@ INSERT INTO reading_logs (
   (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0002'),
     'tester_kim',
+    NULL,
     '2026-03-16 07:30:00',
     NULL,
     4.0,
@@ -103,6 +106,7 @@ INSERT INTO reading_logs (
   (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0003'),
     'reader_lee',
+    'EXCLUDED',
     '2026-04-01 21:00:00',
     NULL,
     NULL,
@@ -112,6 +116,7 @@ INSERT INTO reading_logs (
   (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0004'),
     'review_park',
+    'READ',
     '2026-01-03 11:00:00',
     '2026-01-15 18:00:00',
     5.0,

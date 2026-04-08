@@ -22,7 +22,7 @@ export const getBooks = async (req: Request, res: Response) => {
     const books = await prisma.book.findMany({
       where,
       include: {
-        readingLogs: { select: { rating: true, startDate: true, endDate: true, userName: true } },
+        readingLogs: { select: { readStatus: true, rating: true, startDate: true, endDate: true, userName: true } },
         _count: { select: { memos: true } },
       },
       orderBy: { [sortBy as string]: order },

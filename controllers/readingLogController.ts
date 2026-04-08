@@ -21,12 +21,13 @@ export const getReadingLogs = async (req: Request, res: Response) => {
 export const createReadingLog = async (req: Request, res: Response) => {
   try {
     const { bookId } = req.params;
-    const { userName, startDate, endDate, rating, review } = req.body;
+    const { userName, readStatus, startDate, endDate, rating, review } = req.body;
 
     const log = await prisma.readingLog.create({
       data: {
         bookId: Number(bookId),
         userName,
+        readStatus,
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         rating,
@@ -44,12 +45,13 @@ export const createReadingLog = async (req: Request, res: Response) => {
 export const updateReadingLog = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { userName, startDate, endDate, rating, review } = req.body;
+    const { userName, readStatus, startDate, endDate, rating, review } = req.body;
 
     const log = await prisma.readingLog.update({
       where: { id: Number(id) },
       data: {
         userName,
+        readStatus,
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
         rating,

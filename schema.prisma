@@ -18,6 +18,11 @@ enum BookStatus {
   DONATED   // 기부
 }
 
+enum ReadStatus {
+  READ      // 읽음
+  EXCLUDED  // 읽기 제외
+}
+
 enum MemoType {
   MEMO        // 메모
   HIGHLIGHT   // 하이라이트 구절
@@ -50,13 +55,14 @@ model Book {
 // ─────────────────────────────────────────
 model ReadingLog {
   id        Int       @id @default(autoincrement())
-  bookId    Int
-  userName  String?   @db.VarChar(100)
-  startDate DateTime?
-  endDate   DateTime?
-  rating    Float?    // 0.0 ~ 5.0
-  review    String?   @db.Text
-  createdAt DateTime  @default(now())
+  bookId     Int
+  userName   String?    @db.VarChar(100)
+  readStatus ReadStatus?
+  startDate  DateTime?
+  endDate    DateTime?
+  rating     Float?     // 0.0 ~ 5.0
+  review     String?    @db.Text
+  createdAt  DateTime   @default(now())
   updatedAt DateTime  @updatedAt
 
   book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)

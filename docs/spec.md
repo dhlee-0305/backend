@@ -24,6 +24,13 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 | `SOLD` | 판매 - 중고로 판매한 책 |
 | `DONATED` | 기부 - 주위 사람에게 기부한 책 |
 
+### 읽기 상태 (ReadStatus)
+
+| 상태값 | 설명 |
+|--------|------|
+| `READ` | 읽음 |
+| `EXCLUDED` | 읽기 제외 |
+
 ### 메모 유형 (MemoType)
 
 | 유형값 | 설명 |
@@ -91,7 +98,7 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 | PUT | `/api/reading-logs/:id` | 독서 기록 수정 |
 | DELETE | `/api/reading-logs/:id` | 독서 기록 삭제 |
 
-요청 바디: `userName`, `startDate`, `endDate`, `rating`, `review`
+요청 바디: `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review`
 
 ### 메모 & 하이라이트 (Memos)
 
