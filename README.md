@@ -8,7 +8,7 @@
 
 ## 프로젝트 구조
 ```
-backend/
+bookbackend/
 ├── config/
 │   └── prisma.ts        # Prisma 클라이언트
 ├── controllers/

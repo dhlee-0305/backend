@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "bookbackend",
   "version": "1.0.0",
   "description": "Book management backend API",
   "main": "dist/index.js",
