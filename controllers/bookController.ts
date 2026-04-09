@@ -1,16 +1,17 @@
 import { Request, Response } from 'express';
 import prisma from '../config/prisma';
-import { BookStatus } from '@prisma/client';
+import { BookStatus, ReadStatus } from '@prisma/client';
 
 // ─── 도서 목록 조회 ───────────────────────────────────────────
 export const getBooks = async (req: Request, res: Response) => {
   try {
-    const { status, genre, search, sortBy = 'createdAt', order = 'desc' } = req.query;
+    const { status, genre, search, readStatus, sortBy = 'createdAt', order = 'desc' } = req.query;
 
     const where: any = {};
 
     if (status) where.status = status as BookStatus;
     if (genre) where.genre = genre as string;
+    if (readStatus) where.readingLogs = { some: { readStatus: readStatus as ReadStatus } };
     if (search) {
       where.OR = [
         { title: { contains: search as string } },
