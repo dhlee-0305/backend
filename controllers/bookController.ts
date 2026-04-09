@@ -5,13 +5,18 @@ import { BookStatus, ReadStatus } from '@prisma/client';
 // ─── 도서 목록 조회 ───────────────────────────────────────────
 export const getBooks = async (req: Request, res: Response) => {
   try {
-    const { status, genre, search, readStatus, sortBy = 'createdAt', order = 'desc' } = req.query;
+    const { status, genre, search, readStatus, userName, sortBy = 'createdAt', order = 'desc' } = req.query;
 
     const where: any = {};
 
     if (status) where.status = status as BookStatus;
     if (genre) where.genre = genre as string;
-    if (readStatus) where.readingLogs = { some: { readStatus: readStatus as ReadStatus } };
+    if (readStatus || userName) {
+      const logFilter: any = {};
+      if (readStatus) logFilter.readStatus = readStatus as ReadStatus;
+      if (userName) logFilter.userName = userName as string;
+      where.readingLogs = { some: logFilter };
+    }
     if (search) {
       where.OR = [
         { title: { contains: search as string } },
