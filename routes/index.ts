@@ -9,6 +9,7 @@ import {
   getMemos, createMemo, updateMemo, deleteMemo,
 } from '../controllers/memoController';
 import { getStats } from '../controllers/statsController';
+import { signup, login, logout, me } from '../controllers/authController';
 
 const router = Router();
 
@@ -33,5 +34,11 @@ router.delete('/memos/:id', deleteMemo);
 
 // ─── 통계 API ─────────────────────────────────────────────────
 router.get('/stats', getStats);
+
+// ─── 인증 API ─────────────────────────────────────────────────
+router.post('/auth/signup', signup);
+router.post('/auth/login', login);
+router.post('/auth/logout', logout);
+router.get('/auth/me', me);
 
 export default router;

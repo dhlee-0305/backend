@@ -1,0 +1,62 @@
+### 회원가입
+POST http://localhost:4000/api/auth/signup HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "Test1234!"
+}
+
+###
+
+### 회원가입 - 이메일 중복
+POST http://localhost:4000/api/auth/signup HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "Test1234!"
+}
+
+###
+
+### 로그인 - 성공
+POST http://localhost:4000/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "Test1234!"
+}
+
+###
+
+### 로그인 - 비밀번호 오류
+POST http://localhost:4000/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "wrongpassword"
+}
+
+###
+
+### 로그인 - 존재하지 않는 이메일
+POST http://localhost:4000/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "notexist@example.com",
+  "password": "Test1234!"
+}
+
+###
+
+### 현재 로그인 사용자 조회
+GET http://localhost:4000/api/auth/me HTTP/1.1
+
+###
+
+### 로그아웃
+POST http://localhost:4000/api/auth/logout HTTP/1.1

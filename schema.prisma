@@ -29,6 +29,31 @@ enum MemoType {
 }
 
 // ─────────────────────────────────────────
+// 사용자
+// ─────────────────────────────────────────
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// 로그인 시도 내역
+// ─────────────────────────────────────────
+model LoginHistory {
+  id        Int      @id @default(autoincrement())
+  email     String   @db.VarChar(255)
+  success   Boolean
+  ipAddress String?  @db.VarChar(45)
+  attemptAt DateTime @default(now())
+
+  @@map("login_history")
+}
+
+// ─────────────────────────────────────────
 // 도서
 // ─────────────────────────────────────────
 model Book {
