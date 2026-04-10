@@ -98,12 +98,24 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 | PUT | `/api/books/:id` | 도서 수정 |
 | DELETE | `/api/books/:id` | 도서 삭제 |
 
-목록 조회 쿼리 파라미터: `status`, `genre`, `search`, `sortBy`, `order`
+목록 조회 쿼리 파라미터:
+
+| 파라미터 | 설명 | 기본값 |
+|----------|------|--------|
+| `status` | 도서 상태 필터 (`OWNED`, `SOLD`, `DONATED`) | - |
+| `genre` | 장르 필터 | - |
+| `search` | 제목 / 저자 / ISBN 검색 | - |
+| `readStatus` | 독서 상태 필터 (`READ`, `EXCLUDED`, `NONE`) · `NONE`은 독서 기록이 없는 책(읽지 않은 책) | - |
+| `userName` | 독서 기록의 독자 이름 필터 (`readStatus`와 함께 적용) | - |
+| `sortBy` | 정렬 기준 컬럼 | `createdAt` |
+| `order` | 정렬 방향 (`asc`, `desc`) | `desc` |
+| `page` | 페이지 번호 | `1` |
+| `limit` | 페이지당 항목 수 | `10` |
 
 응답항목:
 
 - `GET /api/books`
-  `success`, `data`, `total`
+  `success`, `data`, `total`, `page`, `limit`
   `data[]`: `id`, `title`, `author`, `publisher`, `isbn`, `genre`, `coverUrl`, `purchaseDate`, `status`, `createdAt`, `updatedAt`, `readingLogs`, `_count`
   `data[].readingLogs[]`: `readStatus`, `rating`, `startDate`, `endDate`, `userName`
   `data[]._count`: `memos`

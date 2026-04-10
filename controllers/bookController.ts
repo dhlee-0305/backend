@@ -5,13 +5,17 @@ import { BookStatus, ReadStatus } from '@prisma/client';
 // ─── 도서 목록 조회 ───────────────────────────────────────────
 export const getBooks = async (req: Request, res: Response) => {
   try {
-    const { status, genre, search, readStatus, userName, sortBy = 'createdAt', order = 'desc' } = req.query;
+    const { status, genre, search, readStatus, userName, sortBy = 'createdAt', order = 'desc', page = '1', limit = '10' } = req.query;
 
     const where: any = {};
 
     if (status) where.status = status as BookStatus;
     if (genre) where.genre = genre as string;
-    if (readStatus || userName) {
+    if (readStatus === 'NONE') {
+      const logFilter: any = {};
+      if (userName) logFilter.userName = userName as string;
+      where.readingLogs = { none: logFilter };
+    } else if (readStatus || userName) {
       const logFilter: any = {};
       if (readStatus) logFilter.readStatus = readStatus as ReadStatus;
       if (userName) logFilter.userName = userName as string;
@@ -25,16 +29,25 @@ export const getBooks = async (req: Request, res: Response) => {
       ];
     }
 
-    const books = await prisma.book.findMany({
-      where,
-      include: {
-        readingLogs: { select: { readStatus: true, rating: true, startDate: true, endDate: true, userName: true } },
-        _count: { select: { memos: true } },
-      },
-      orderBy: { [sortBy as string]: order },
-    });
+    const pageNum = parseInt(page as string, 10);
+    const limitNum = parseInt(limit as string, 10);
+    const skip = (pageNum - 1) * limitNum;
 
-    res.json({ success: true, data: books, total: books.length });
+    const [books, total] = await Promise.all([
+      prisma.book.findMany({
+        where,
+        include: {
+          readingLogs: { select: { readStatus: true, rating: true, startDate: true, endDate: true, userName: true } },
+          _count: { select: { memos: true } },
+        },
+        orderBy: { [sortBy as string]: order },
+        skip,
+        take: limitNum,
+      }),
+      prisma.book.count({ where }),
+    ]);
+
+    res.json({ success: true, data: books, total, page: pageNum, limit: limitNum });
   } catch (error) {
     res.status(500).json({ success: false, message: '도서 목록 조회 실패', error });
   }
