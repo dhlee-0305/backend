@@ -40,7 +40,7 @@ export const getBooks = async (req: Request, res: Response) => {
           readingLogs: { select: { readStatus: true, rating: true, startDate: true, endDate: true, userName: true } },
           _count: { select: { memos: true } },
         },
-        orderBy: { [sortBy as string]: order },
+        orderBy: { [sortBy as string]: order as 'asc' | 'desc' },
         skip,
         take: limitNum,
       }),

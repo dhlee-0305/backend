@@ -8,6 +8,10 @@ GET http://localhost:4000/api/books?page=1&limit=5 HTTP/1.1
 
 ###
 
+### 도서 목록 조회 - 상태 필터 (판매 완료)
+GET http://localhost:4000/api/books?status=SOLD&sortBy=purchaseDate&order=desc&page=1&limit=10 HTTP/1.1
+
+
 ### 도서 목록 조회 - 상태 필터 (소장 중)
 GET http://localhost:4000/api/books?status=OWNED HTTP/1.1
 
