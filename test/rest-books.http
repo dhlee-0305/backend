@@ -114,15 +114,17 @@ Content-Type: application/json
 ###
 
 ### 도서 수정 - 성공
-PUT http://localhost:4000/api/books/1 HTTP/1.1
+PUT http://localhost:4000/api/books/9243 HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "해리포터와 마법사의 돌 (개정판)",
-  "author": "J.K. 롤링",
-  "publisher": "문학수첩",
-  "isbn": "9788983920312",
-  "genre": "판타지",
+  "title": "자기만의 방",
+  "author": "버지니아 울프",
+  "publisher": "열린책들",
+  "isbn": "8932912831 9788932912837",
+  "genre": "기타",
+  "coverUrl": "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6216041%3Ftimestamp%3D20231007145116",
+  "purchaseDate": "2026-03-03",
   "status": "OWNED"
 }
 

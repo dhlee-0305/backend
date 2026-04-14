@@ -61,9 +61,9 @@ model Book {
   title        String      @db.VarChar(255)
   author       String      @db.VarChar(255)
   publisher    String?     @db.VarChar(255)
-  isbn         String?     @unique @db.VarChar(20)
+  isbn         String?     @unique @db.VarChar(30)
   genre        String?     @db.VarChar(100)
-  coverUrl     String?     @db.VarChar(500)
+  coverUrl     String?     @db.Text
   purchaseDate DateTime?
   status       BookStatus  @default(OWNED)
   createdAt    DateTime    @default(now())
