@@ -82,7 +82,7 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 - Book 삭제 시 ReadingLog, Memo 함께 삭제 (Cascade)
 - ReadingLog는 bookId당 여러 개 등록 가능 (재독 기록 지원)
 - 별점은 0.0 ~ 5.0 범위 (소수점 1자리)
-- 메모 목록은 페이지 오름차순 → 등록일 내림차순 정렬
+- 메모 목록은 등록일 내림차순 정렬
 
 ---
 
