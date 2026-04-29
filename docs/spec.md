@@ -86,142 +86,17 @@ Book이 삭제되면 연결된 ReadingLog와 Memo는 함께 삭제됩니다 (Cas
 
 ---
 
-## API 엔드포인트
+## API 문서
 
-### 도서 (Books)
+각 도메인별 상세 Request/Response 명세는 아래 개별 문서를 참고하세요.
 
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/books` | 도서 목록 조회 |
-| GET | `/api/books/:id` | 도서 상세 조회 |
-| POST | `/api/books` | 도서 등록 |
-| PUT | `/api/books/:id` | 도서 수정 |
-| DELETE | `/api/books/:id` | 도서 삭제 |
-
-목록 조회 쿼리 파라미터:
-
-| 파라미터 | 설명 | 기본값 |
-|----------|------|--------|
-| `status` | 도서 상태 필터 (`OWNED`, `SOLD`, `DONATED`) | - |
-| `genre` | 장르 필터 | - |
-| `search` | 제목 / 저자 / ISBN 검색 | - |
-| `readStatus` | 독서 상태 필터 (`READ`, `EXCLUDED`, `NONE`) · `NONE`은 독서 기록이 없는 책(읽지 않은 책) | - |
-| `userName` | 독서 기록의 독자 이름 필터 (`readStatus`와 함께 적용) | - |
-| `sortBy` | 정렬 기준 컬럼 | `createdAt` |
-| `order` | 정렬 방향 (`asc`, `desc`) | `desc` |
-| `page` | 페이지 번호 | `1` |
-| `limit` | 페이지당 항목 수 | `10` |
-
-응답항목:
-
-- `GET /api/books`
-  `success`, `data`, `total`, `page`, `limit`
-  `data[]`: `id`, `title`, `author`, `publisher`, `isbn`, `genre`, `coverUrl`, `purchaseDate`, `status`, `createdAt`, `updatedAt`, `readingLogs`, `_count`
-  `data[].readingLogs[]`: `readStatus`, `rating`, `startDate`, `endDate`, `userName`
-  `data[]._count`: `memos`
-- `GET /api/books/:id`
-  `success`, `data`
-  `data`: `id`, `title`, `author`, `publisher`, `isbn`, `genre`, `coverUrl`, `purchaseDate`, `status`, `createdAt`, `updatedAt`, `readingLogs`, `memos`
-  `data.readingLogs[]`: `id`, `bookId`, `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review`, `createdAt`, `updatedAt`
-  `data.memos[]`: `id`, `bookId`, `page`, `content`, `type`, `createdAt`, `updatedAt`
-- `POST /api/books`
-  `success`, `data`
-  `data`: `id`, `title`, `author`, `publisher`, `isbn`, `genre`, `coverUrl`, `purchaseDate`, `status`, `createdAt`, `updatedAt`
-- `PUT /api/books/:id`
-  `success`, `data`
-  `data`: `id`, `title`, `author`, `publisher`, `isbn`, `genre`, `coverUrl`, `purchaseDate`, `status`, `createdAt`, `updatedAt`
-- `DELETE /api/books/:id`
-  `success`, `message`
-
-### 독서 기록 (ReadingLog)
-
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/books/:bookId/reading-logs` | 독서 기록 목록 조회 |
-| POST | `/api/books/:bookId/reading-logs` | 독서 기록 등록 |
-| PUT | `/api/reading-logs/:id` | 독서 기록 수정 |
-| DELETE | `/api/reading-logs/:id` | 독서 기록 삭제 |
-
-요청 바디: `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review`
-
-응답항목:
-
-- `GET /api/books/:bookId/reading-logs`
-  `success`, `data`, `total`
-  `data[]`: `id`, `bookId`, `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review`, `createdAt`, `updatedAt`
-- `POST /api/books/:bookId/reading-logs`
-  `success`, `data`
-  `data`: `id`, `bookId`, `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review`, `createdAt`, `updatedAt`
-- `PUT /api/reading-logs/:id`
-  `success`, `data`
-  `data`: `id`, `bookId`, `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review`, `createdAt`, `updatedAt`
-- `DELETE /api/reading-logs/:id`
-  `success`, `message`
-
-### 메모 & 하이라이트 (Memos)
-
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/books/:bookId/memos` | 메모 목록 조회 |
-| POST | `/api/books/:bookId/memos` | 메모 등록 |
-| PUT | `/api/memos/:id` | 메모 수정 |
-| DELETE | `/api/memos/:id` | 메모 삭제 |
-
-목록 조회 쿼리 파라미터: `type`
-
-응답항목:
-
-- `GET /api/books/:bookId/memos`
-  `success`, `data`, `total`
-  `data[]`: `id`, `bookId`, `page`, `content`, `type`, `createdAt`, `updatedAt`
-- `POST /api/books/:bookId/memos`
-  `success`, `data`
-  `data`: `id`, `bookId`, `page`, `content`, `type`, `createdAt`, `updatedAt`
-- `PUT /api/memos/:id`
-  `success`, `data`
-  `data`: `id`, `bookId`, `page`, `content`, `type`, `createdAt`, `updatedAt`
-- `DELETE /api/memos/:id`
-  `success`, `message`
-
-### 인증 (Auth)
-
-| Method | URL | 설명 |
-|--------|-----|------|
-| POST | `/api/auth/signup` | 회원가입 |
-| POST | `/api/auth/login` | 로그인 |
-| POST | `/api/auth/logout` | 로그아웃 |
-| GET | `/api/auth/me` | 현재 로그인 사용자 조회 |
-
-요청 바디: `email`, `password` (회원가입·로그인 공통)
-
-응답항목:
-
-- `POST /api/auth/signup`
-  `success`, `data`
-  `data`: `id`, `email`, `createdAt`
-- `POST /api/auth/login`
-  `success`, `data`
-  `data`: `id`, `email`
-- `POST /api/auth/logout`
-  `success`, `message`
-- `GET /api/auth/me`
-  `success`, `data`
-  `data`: `id`, `email`
-
-### 통계 (Stats)
-
-| Method | URL | 설명 |
-|--------|-----|------|
-| GET | `/api/stats` | 전체 통계 조회 |
-
-응답항목:
-
-- `GET /api/stats`
-  `success`, `data`
-  `data`: `totalBooks`, `statusCounts`, `genreCounts`, `monthlyReading`, `avgRating`, `yearlyDoneCount`, `currentYear`
-  `data.statusCounts[]`: `status`, `count`
-  `data.genreCounts[]`: `genre`, `count`
-  `data.monthlyReading[]`: `month`, `count`
+| 도메인 | 문서 |
+|--------|------|
+| 도서 | [books-api.md](./books-api.md) |
+| 독서 기록 | [reading-logs-api.md](./reading-logs-api.md) |
+| 메모 & 하이라이트 | [memos-api.md](./memos-api.md) |
+| 인증 | [auth-api.md](./auth-api.md) |
+| 통계 | [stats-api.md](./stats-api.md) |
 
 ---
 
