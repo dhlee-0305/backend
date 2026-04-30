@@ -6,7 +6,10 @@
       "Bash(npm run:*)",
       "Bash(npx prisma:*)",
       "Bash(mkdir -p \"c:/Downloads/workspace_react/bookbackend/.claude/agents\")",
-      "Bash(mv \"c:/Downloads/workspace_react/bookbackend/agents/docs-agent.md\" \"c:/Downloads/workspace_react/bookbackend/.claude/agents/docs-agent.md\")"
+      "Bash(mv \"c:/Downloads/workspace_react/bookbackend/agents/docs-agent.md\" \"c:/Downloads/workspace_react/bookbackend/.claude/agents/docs-agent.md\")",
+      "Bash(npx tsc *)",
+      "Bash(npx jest *)",
+      "Bash(npx ts-jest *)"
     ]
   }
 }
