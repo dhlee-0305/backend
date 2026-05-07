@@ -4,17 +4,17 @@
 
 ### 포함
 - `GET /api/stats` - 전체 통계 조회
-- 응답 구조 전체 필드 검증 (`totalBooks`, `statusCounts`, `genreCounts`, `monthlyReading`, `avgRating`, `yearlyDoneCount`, `currentYear`)
-- `monthlyReading` 1월~12월 12개 항목 항상 반환 검증
+- 응답 구조 전체 필드 검증 (`totalBooks`, `statusCounts`, `genreCounts`, `yearlyReading`, `avgRating`, `yearlyDoneCount`, `currentYear`)
+- 로그인 세션 필수 및 비로그인 401 검증
+- `yearlyReading` 로그인 사용자 기준 연도별 완독 건수 반환 검증
 - 장르 없는 도서의 `"미분류"` 집계 처리 검증
 - 평균 별점 계산 (별점 기록 없을 때 0 반환) 검증
-- `yearlyDoneCount` 올해 endDate 기준 완독 수 검증
+- `yearlyDoneCount` 로그인 사용자 기준 올해 createdAt 완독 수 검증
 - `statusCounts` 상태별 도서 수 정합성 검증
 
 ### 제외
-- 세션 인증 (통계 API는 인증 불필요)
 - 연도별 파라미터 필터링 (현재 `currentYear` 고정, 파라미터 없음)
-- 개인별 통계 (현재 전체 통합 통계만 제공)
+- 사용자 식별용 `userId` FK 기반 집계 (현재 `reading_logs.userName`과 로그인 이메일을 매칭)
 - 연간 독서 목표 설정·달성률 (명세서 언급되나 현재 구현 없음)
 
 ---
@@ -26,7 +26,7 @@
 | **기능 테스트** | 응답 구조 및 모든 필드 존재 여부 검증 |
 | **데이터 정합성 테스트** | 실제 DB 데이터와 통계 수치의 일치 여부 |
 | **경계값 테스트** | 데이터 없는 상태(빈 DB), 별점 없는 상태 |
-| **집계 로직 테스트** | 월별 완독 집계, 미분류 처리, 평균 별점 계산 |
+| **집계 로직 테스트** | 연도별 완독 집계, 미분류 처리, 평균 별점 계산 |
 
 ---
 
@@ -53,7 +53,7 @@
     - `totalBooks` (number)
     - `statusCounts` (array)
     - `genreCounts` (array)
-    - `monthlyReading` (array, 12개 항목)
+    - `yearlyReading` (array)
     - `avgRating` (number)
     - `yearlyDoneCount` (number)
     - `currentYear` (number, 현재 연도)
@@ -65,6 +65,14 @@
 - **엔드포인트:** `GET /api/stats`
 - **전제조건:** DB에 도서 N건 등록
 - **기대 결과:** `data.totalBooks` = N (DB `books` 테이블 전체 count와 일치)
+
+---
+
+### TC-STATS-002-A: 통계 조회 - 비로그인 차단
+- **우선순위:** P1
+- **엔드포인트:** `GET /api/stats`
+- **전제조건:** 로그인 세션 없음
+- **기대 결과:** HTTP 401, `success: false`
 
 ---
 
@@ -111,41 +119,37 @@
 
 ---
 
-### TC-STATS-007: monthlyReading - 12개 항목 항상 반환
+### TC-STATS-007: yearlyReading - 데이터 없는 경우
 - **우선순위:** P1
 - **엔드포인트:** `GET /api/stats`
-- **기대 결과:**
-  - `data.monthlyReading.length === 12`
-  - `month` 필드가 1~12 순서로 존재
-  - 완독 기록 없는 월의 `count: 0`
+- **기대 결과:** `data.yearlyReading: []`
 
 ---
 
-### TC-STATS-008: monthlyReading - 올해 완독 월별 집계 정합성
+### TC-STATS-008: yearlyReading - 로그인 사용자 기준 연도별 완독 집계 정합성
 - **우선순위:** P1
 - **엔드포인트:** `GET /api/stats`
-- **전제조건:** 올해 3월에 endDate가 설정된 독서 기록 2건, 5월에 1건 등록
+- **전제조건:** 로그인 사용자 이메일과 `userName`이 일치하고, `readStatus: "READ"` 이며 `createdAt` 연도가 서로 다른 독서 기록 등록
 - **기대 결과:**
-  - `monthlyReading[2]: { month: 3, count: 2 }` (0-indexed: 배열 인덱스 2 = 3월)
-  - `monthlyReading[4]: { month: 5, count: 1 }`
-  - 나머지 월 `count: 0`
+  - `yearlyReading` 배열에 `{ year: <연도>, count: <건수> }` 형식으로 집계
+  - `readStatus: "EXCLUDED"` 기록은 제외
+  - 다른 사용자의 `READ` 기록은 제외
 
 ---
 
-### TC-STATS-009: monthlyReading - 작년 완독 기록은 집계 제외
+### TC-STATS-009: yearlyDoneCount - 작년 완독 기록은 올해 집계 제외
 - **우선순위:** P2
 - **엔드포인트:** `GET /api/stats`
-- **전제조건:** 작년 12월에 endDate가 설정된 독서 기록 존재
-- **기대 결과:** 해당 기록이 올해 `monthlyReading` 집계에 포함되지 않음
-- **비고:** `yearlyDone` 쿼리가 `currentYear-01-01` ~ `currentYear-12-31` 범위로 필터
+- **전제조건:** 로그인 사용자 이메일과 `userName`이 일치하고 작년 `createdAt`을 가진 `READ` 독서 기록 존재
+- **기대 결과:** 해당 기록은 `yearlyDoneCount`에 포함되지 않음
 
 ---
 
 ### TC-STATS-010: yearlyDoneCount - 올해 완독 건수 정합성
 - **우선순위:** P1
 - **엔드포인트:** `GET /api/stats`
-- **전제조건:** 올해 endDate 기록 5건, 작년 endDate 기록 3건 존재
-- **기대 결과:** `data.yearlyDoneCount: 5` (올해 기록만 집계)
+- **전제조건:** 로그인 사용자 이메일과 `userName`이 일치하는 올해 `createdAt` READ 기록 5건, 작년 `createdAt` READ 기록 3건 존재
+- **기대 결과:** `data.yearlyDoneCount: 5` (올해 READ 기록만 집계)
 
 ---
 
@@ -183,7 +187,7 @@
   - `data.totalBooks: 0`
   - `data.statusCounts: []`
   - `data.genreCounts: []`
-  - `data.monthlyReading` 12개 모두 `count: 0`
+  - `data.yearlyReading: []`
   - `data.avgRating: 0`
   - `data.yearlyDoneCount: 0`
   - `data.currentYear` 현재 연도
@@ -203,6 +207,7 @@
 | 항목 | 내용 |
 |------|------|
 | statusCounts 누락 상태 | 도서가 없는 상태값은 groupBy 결과에서 제외됨 - 프론트엔드 방어 코드 필요 |
-| 연말 경계 처리 | `new Date("${year}-12-31")` 은 UTC 기준이므로 서버 시간대에 따라 12월 31일 레코드 누락 가능 |
+| 사용자 매칭 기준 | `reading_logs`에 `userId`가 없어 로그인 이메일과 `userName` 문자열을 매칭하므로 데이터 입력값 일관성이 중요 |
+| 연말 경계 처리 | `createdAt.getFullYear()` 기준으로 집계하므로 서버 런타임 시간대 영향 확인 필요 |
 | 대용량 데이터 | readingLog 전체를 메모리에 로드(`findMany`)하므로 데이터 증가 시 성능 이슈 가능 |
 | 목표 달성률 미구현 | 명세서에 연간 독서 목표 기능이 명시되어 있으나 현재 API에서 미제공 |

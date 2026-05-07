@@ -4,6 +4,10 @@ import prisma from '../config/prisma';
 // ─── 전체 통계 조회 ───────────────────────────────────────────
 export const getStats = async (req: Request, res: Response) => {
   try {
+    if (!req.session.userId || !req.session.email) {
+      return res.status(401).json({ success: false, message: '로그인이 필요합니다.' });
+    }
+
     const currentYear = new Date().getFullYear();
 
     // 상태별 도서 수
@@ -19,26 +23,25 @@ export const getStats = async (req: Request, res: Response) => {
       orderBy: { _count: { id: 'desc' } },
     });
 
-    // 올해 완독한 책 (월별)
-    const yearlyDone = await prisma.readingLog.findMany({
+    const readingLogs = await prisma.readingLog.findMany({
       where: {
-        endDate: {
-          gte: new Date(`${currentYear}-01-01`),
-          lte: new Date(`${currentYear}-12-31`),
-        },
+        readStatus: 'READ',
+        userName: req.session.email,
       },
-      select: { endDate: true, rating: true, bookId: true },
+      select: { createdAt: true },
     });
 
-    // 월별 독서량 집계
-    const monthlyReading: Record<number, number> = {};
-    for (let m = 1; m <= 12; m++) monthlyReading[m] = 0;
-    yearlyDone.forEach((log) => {
-      if (log.endDate) {
-        const month = new Date(log.endDate).getMonth() + 1;
-        monthlyReading[month]++;
-      }
+    const yearlyReading = new Map<number, number>();
+    readingLogs.forEach((log) => {
+      const year = log.createdAt.getFullYear();
+      yearlyReading.set(year, (yearlyReading.get(year) ?? 0) + 1);
     });
+
+    const yearlyReadingStats = Array.from(yearlyReading.entries())
+      .map(([year, count]) => ({ year, count }))
+      .sort((a, b) => a.year - b.year);
+
+    const yearlyDoneCount = yearlyReading.get(currentYear) ?? 0;
 
     // 평균 별점
     const avgRating = await prisma.readingLog.aggregate({
@@ -55,12 +58,9 @@ export const getStats = async (req: Request, res: Response) => {
         totalBooks,
         statusCounts: statusCounts.map((s) => ({ status: s.status, count: s._count.id })),
         genreCounts: genreCounts.map((g) => ({ genre: g.genre ?? '미분류', count: g._count.id })),
-        monthlyReading: Object.entries(monthlyReading).map(([month, count]) => ({
-          month: Number(month),
-          count,
-        })),
+        yearlyReading: yearlyReadingStats,
         avgRating: avgRating._avg.rating ?? 0,
-        yearlyDoneCount: yearlyDone.length,
+        yearlyDoneCount,
         currentYear,
       },
     });

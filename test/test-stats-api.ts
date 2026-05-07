@@ -3,6 +3,21 @@ import { buildApp, cleanDb, closeDb } from './helpers';
 import prisma from '../config/prisma';
 
 const app = buildApp();
+const PASSWORD = 'password1234';
+
+async function loginAs(email = 'reader@example.com') {
+  const agent = request.agent(app);
+
+  await agent
+    .post('/api/auth/signup')
+    .send({ email, password: PASSWORD });
+
+  await agent
+    .post('/api/auth/login')
+    .send({ email, password: PASSWORD });
+
+  return agent;
+}
 
 beforeEach(async () => {
   await cleanDb();
@@ -17,21 +32,29 @@ afterAll(async () => {
 // ─────────────────────────────────────────────────────────────
 describe('TC-STATS-001: 통계 조회 - 응답 구조 검증', () => {
   it('HTTP 200, 모든 필수 필드 포함', async () => {
-    const res = await request(app).get('/api/stats');
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.data).toHaveProperty('totalBooks');
     expect(res.body.data).toHaveProperty('statusCounts');
     expect(res.body.data).toHaveProperty('genreCounts');
-    expect(res.body.data).toHaveProperty('monthlyReading');
+    expect(res.body.data).toHaveProperty('yearlyReading');
     expect(res.body.data).toHaveProperty('avgRating');
     expect(res.body.data).toHaveProperty('yearlyDoneCount');
     expect(res.body.data).toHaveProperty('currentYear');
     expect(typeof res.body.data.totalBooks).toBe('number');
     expect(Array.isArray(res.body.data.statusCounts)).toBe(true);
     expect(Array.isArray(res.body.data.genreCounts)).toBe(true);
-    expect(Array.isArray(res.body.data.monthlyReading)).toBe(true);
+    expect(Array.isArray(res.body.data.yearlyReading)).toBe(true);
+  });
+
+  it('비로그인 상태에서는 HTTP 401', async () => {
+    const res = await request(app).get('/api/stats');
+
+    expect(res.status).toBe(401);
+    expect(res.body.success).toBe(false);
   });
 });
 
@@ -48,7 +71,8 @@ describe('TC-STATS-002: totalBooks - 전체 도서 수 정합성', () => {
       ],
     });
 
-    const res = await request(app).get('/api/stats');
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
     expect(res.body.data.totalBooks).toBe(3);
   });
 });
@@ -69,7 +93,8 @@ describe('TC-STATS-003: statusCounts - 상태별 도서 수 정합성', () => {
       ],
     });
 
-    const res = await request(app).get('/api/stats');
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
     const statusCounts: { status: string; count: number }[] = res.body.data.statusCounts;
 
     const owned = statusCounts.find((s) => s.status === 'OWNED');
@@ -83,43 +108,44 @@ describe('TC-STATS-003: statusCounts - 상태별 도서 수 정합성', () => {
 });
 
 // ─────────────────────────────────────────────────────────────
-// TC-STATS-007: monthlyReading - 12개 항목 항상 반환
+// TC-STATS-007: yearlyReading - 연도별 완독 건수 반환
 // ─────────────────────────────────────────────────────────────
-describe('TC-STATS-007: monthlyReading - 12개 항목 항상 반환', () => {
-  it('데이터 없어도 1~12월 12개 항목, count:0', async () => {
-    const res = await request(app).get('/api/stats');
-    const monthly: { month: number; count: number }[] = res.body.data.monthlyReading;
+describe('TC-STATS-007: yearlyReading - 연도별 완독 건수 반환', () => {
+  it('데이터 없으면 빈 배열 반환', async () => {
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
+    const yearly: { year: number; count: number }[] = res.body.data.yearlyReading;
 
-    expect(monthly).toHaveLength(12);
-    for (let m = 1; m <= 12; m++) {
-      const item = monthly.find((x) => x.month === m);
-      expect(item).toBeDefined();
-      expect(item!.count).toBe(0);
-    }
+    expect(yearly).toHaveLength(0);
   });
 
-  it('완독 기록 있는 월은 count > 0, 없는 월은 count === 0', async () => {
+  it('createdAt 기준으로 연도별 READ 기록을 집계', async () => {
     const book = await prisma.book.create({
       data: { title: '책', author: '저자', status: 'OWNED' },
     });
+    const email = 'reader@example.com';
+    const agent = await loginAs(email);
     const currentYear = new Date().getFullYear();
 
-    // 올해 3월 완독 기록 2건
     await prisma.readingLog.createMany({
       data: [
-        { bookId: book.id, endDate: new Date(`${currentYear}-03-10`) },
-        { bookId: book.id, endDate: new Date(`${currentYear}-03-20`) },
+        { bookId: book.id, userName: email, readStatus: 'READ', createdAt: new Date(`${currentYear}-03-10`) },
+        { bookId: book.id, userName: email, readStatus: 'READ', createdAt: new Date(`${currentYear}-03-20`) },
+        { bookId: book.id, userName: email, readStatus: 'READ', createdAt: new Date(`${currentYear - 1}-05-01`) },
+        { bookId: book.id, userName: email, readStatus: 'EXCLUDED', createdAt: new Date(`${currentYear}-06-01`) },
+        { bookId: book.id, userName: 'other@example.com', readStatus: 'READ', createdAt: new Date(`${currentYear}-07-01`) },
       ],
     });
 
-    const res = await request(app).get('/api/stats');
-    const monthly: { month: number; count: number }[] = res.body.data.monthlyReading;
+    const res = await agent.get('/api/stats');
+    const yearly: { year: number; count: number }[] = res.body.data.yearlyReading;
 
-    const march = monthly.find((x) => x.month === 3);
-    expect(march!.count).toBe(2);
+    expect(yearly).toEqual([
+      { year: currentYear - 1, count: 1 },
+      { year: currentYear, count: 2 },
+    ]);
 
-    const april = monthly.find((x) => x.month === 4);
-    expect(april!.count).toBe(0);
+    expect(res.body.data.yearlyDoneCount).toBe(2);
   });
 });
 
@@ -127,21 +153,25 @@ describe('TC-STATS-007: monthlyReading - 12개 항목 항상 반환', () => {
 // TC-STATS-010: yearlyDoneCount - 올해 완독 건수 정합성
 // ─────────────────────────────────────────────────────────────
 describe('TC-STATS-010: yearlyDoneCount - 올해 완독 건수 정합성', () => {
-  it('올해 endDate 기록만 집계, 작년 기록 제외', async () => {
+  it('올해 createdAt READ 기록만 집계, 작년 기록 제외', async () => {
     const book = await prisma.book.create({
       data: { title: '책', author: '저자', status: 'OWNED' },
     });
+    const email = 'reader@example.com';
+    const agent = await loginAs(email);
     const currentYear = new Date().getFullYear();
 
     await prisma.readingLog.createMany({
       data: [
-        { bookId: book.id, endDate: new Date(`${currentYear}-06-01`) },
-        { bookId: book.id, endDate: new Date(`${currentYear}-09-15`) },
-        { bookId: book.id, endDate: new Date(`${currentYear - 1}-12-31`) }, // 작년
+        { bookId: book.id, userName: email, readStatus: 'READ', createdAt: new Date(`${currentYear}-06-01`) },
+        { bookId: book.id, userName: email, readStatus: 'READ', createdAt: new Date(`${currentYear}-09-15`) },
+        { bookId: book.id, userName: email, readStatus: 'READ', createdAt: new Date(`${currentYear - 1}-12-31`) },
+        { bookId: book.id, userName: email, readStatus: 'EXCLUDED', createdAt: new Date(`${currentYear}-11-01`) },
+        { bookId: book.id, userName: 'other@example.com', readStatus: 'READ', createdAt: new Date(`${currentYear}-12-01`) },
       ],
     });
 
-    const res = await request(app).get('/api/stats');
+    const res = await agent.get('/api/stats');
     expect(res.body.data.yearlyDoneCount).toBe(2);
   });
 });
@@ -158,7 +188,8 @@ describe('TC-STATS-012: avgRating - 별점 기록 없는 경우', () => {
       data: { bookId: book.id, readStatus: 'READ', rating: null },
     });
 
-    const res = await request(app).get('/api/stats');
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
     expect(res.body.data.avgRating).toBe(0);
   });
 });
@@ -179,7 +210,8 @@ describe('TC-STATS-013: avgRating - null 포함 혼재 시 null 제외 평균', 
       ],
     });
 
-    const res = await request(app).get('/api/stats');
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
     expect(res.body.data.avgRating).toBe(5);
   });
 });
@@ -188,8 +220,9 @@ describe('TC-STATS-013: avgRating - null 포함 혼재 시 null 제외 평균', 
 // TC-STATS-014: 빈 DB - 데이터 없는 초기 상태
 // ─────────────────────────────────────────────────────────────
 describe('TC-STATS-014: 빈 DB - 데이터 없는 초기 상태', () => {
-  it('모든 집계 0, monthlyReading 12개 모두 count:0, currentYear 현재 연도', async () => {
-    const res = await request(app).get('/api/stats');
+  it('모든 집계 0, yearlyReading 빈 배열, currentYear 현재 연도', async () => {
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
 
     expect(res.status).toBe(200);
     expect(res.body.data.totalBooks).toBe(0);
@@ -198,8 +231,7 @@ describe('TC-STATS-014: 빈 DB - 데이터 없는 초기 상태', () => {
     expect(res.body.data.avgRating).toBe(0);
     expect(res.body.data.yearlyDoneCount).toBe(0);
     expect(res.body.data.currentYear).toBe(new Date().getFullYear());
-    expect(res.body.data.monthlyReading).toHaveLength(12);
-    expect(res.body.data.monthlyReading.every((m: { count: number }) => m.count === 0)).toBe(true);
+    expect(res.body.data.yearlyReading).toHaveLength(0);
   });
 });
 
@@ -216,7 +248,8 @@ describe('TC-STATS-006: genreCounts - 장르 없는 도서 "미분류" 집계', 
       ],
     });
 
-    const res = await request(app).get('/api/stats');
+    const agent = await loginAs();
+    const res = await agent.get('/api/stats');
     const genreCounts: { genre: string; count: number }[] = res.body.data.genreCounts;
 
     const unclassified = genreCounts.find((g) => g.genre === '미분류');
