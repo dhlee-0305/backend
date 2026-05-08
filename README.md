@@ -72,7 +72,7 @@ CREATE DATABASE book_manager CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ### 2. 환경변수 설정 (`.env`)
 
 ```env
-DATABASE_URL="mysql://root:your_password@localhost:3306/book_manager"
+DATABASE_URL="mysql://root:your_password@172.21.80.1:3306/book_manager"
 SESSION_SECRET="your_secret_key_here"
 PORT=4000
 CLIENT_URL=http://localhost:3000
@@ -140,7 +140,7 @@ CREATE DATABASE book_manager_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_
 ### `.env.test` 설정
 
 ```env
-DATABASE_URL="mysql://root:your_password@localhost:3306/book_manager_test"
+DATABASE_URL="mysql://root:your_password@172.21.80.1:3306/book_manager_test"
 SESSION_SECRET="test-secret-key"
 NODE_ENV="test"
 PORT=4001
@@ -150,7 +150,7 @@ PORT=4001
 
 ```powershell
 # PowerShell
-$env:DATABASE_URL="mysql://root:your_password@localhost:3306/book_manager_test"; npx prisma migrate deploy
+$env:DATABASE_URL="mysql://root:your_password@172.21.80.1:3306/book_manager_test"; npx prisma migrate deploy
 ```
 
 ### 테스트 실행

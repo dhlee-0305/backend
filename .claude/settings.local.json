@@ -9,7 +9,20 @@
       "Bash(mv \"c:/Downloads/workspace_react/bookbackend/agents/docs-agent.md\" \"c:/Downloads/workspace_react/bookbackend/.claude/agents/docs-agent.md\")",
       "Bash(npx tsc *)",
       "Bash(npx jest *)",
-      "Bash(npx ts-jest *)"
+      "Bash(npx ts-jest *)",
+      "Bash(npm --version)",
+      "Bash(mysql -u dhlee -phappy3119 -e \"SELECT 1;\")",
+      "Read(//usr/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(curl -s http://localhost:4000/)",
+      "Bash(kill %1)",
+      "Bash(npm run *)",
+      "Bash(echo \"PID: $!\")",
+      "Read(//tmp/**)",
+      "Bash(curl *)",
+      "Bash(awk '{print $2}')",
+      "Bash(nc -zv 10.255.255.254 3306)",
+      "Bash(nc -zv 127.0.0.1 3306)"
     ]
   }
 }
