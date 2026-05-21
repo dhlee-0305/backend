@@ -1,0 +1,252 @@
+{
+  "/mnt/c/Downloads/workspace_react/bookbackend/index.ts": {
+    "mtime": 1775795814.1817107,
+    "ast_hash": "22023bce20777fce5ee1fceb27cd7a6a",
+    "semantic_hash": "22023bce20777fce5ee1fceb27cd7a6a"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/jest.config.ts": {
+    "mtime": 1777511352.5155697,
+    "ast_hash": "98093b7a89577da78817ba18786c97a4",
+    "semantic_hash": "98093b7a89577da78817ba18786c97a4"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/package.json": {
+    "mtime": 1777511730.7086525,
+    "ast_hash": "cd87f1f494abfdb28ae0b7d154790803",
+    "semantic_hash": "cd87f1f494abfdb28ae0b7d154790803"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/tsconfig.json": {
+    "mtime": 1775542330.4029624,
+    "ast_hash": "25d574d1eebcc67e4847993a37673817",
+    "semantic_hash": "25d574d1eebcc67e4847993a37673817"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.claude/settings.json": {
+    "mtime": 1779172897.3499794,
+    "ast_hash": "8a80554c91d9fca8acb82f023de02f11",
+    "semantic_hash": "8a80554c91d9fca8acb82f023de02f11"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.claude/settings.local.json": {
+    "mtime": 1779325725.0556872,
+    "ast_hash": "21e71a2aeaf4e9db88b02d46fa0890cf",
+    "semantic_hash": "21e71a2aeaf4e9db88b02d46fa0890cf"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/config/prisma.ts": {
+    "mtime": 1775542284.132804,
+    "ast_hash": "5225fbdf4489e7956620ecf8477f1e3a",
+    "semantic_hash": "5225fbdf4489e7956620ecf8477f1e3a"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/controllers/authController.ts": {
+    "mtime": 1775693808.5856245,
+    "ast_hash": "4b13c89823884178049b2a791898e11e",
+    "semantic_hash": "4b13c89823884178049b2a791898e11e"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/controllers/bookController.ts": {
+    "mtime": 1775784947.9294386,
+    "ast_hash": "d0d059a77aabe83c7cb1189872785fba",
+    "semantic_hash": "d0d059a77aabe83c7cb1189872785fba"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/controllers/memoController.ts": {
+    "mtime": 1775542312.0421247,
+    "ast_hash": "e0a4deef4af18b1f71dcd4eb3ddaf3c3",
+    "semantic_hash": "e0a4deef4af18b1f71dcd4eb3ddaf3c3"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/controllers/readingLogController.ts": {
+    "mtime": 1775624061.5263176,
+    "ast_hash": "3903a6fa46c6814ae2aace9c14d0d1d8",
+    "semantic_hash": "3903a6fa46c6814ae2aace9c14d0d1d8"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/controllers/statsController.ts": {
+    "mtime": 1778130073.3453748,
+    "ast_hash": "d3fe72cac8d55c0107535a038d65d329",
+    "semantic_hash": "d3fe72cac8d55c0107535a038d65d329"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/test-data.sql": {
+    "mtime": 1775624774.1469126,
+    "ast_hash": "8b13d4598592bf112d9cf8ec8a78ba42",
+    "semantic_hash": "8b13d4598592bf112d9cf8ec8a78ba42"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/test-stats-yearly.sql": {
+    "mtime": 1778130551.281728,
+    "ast_hash": "448c4d17c79e971e8f8cd7495269290e",
+    "semantic_hash": "448c4d17c79e971e8f8cd7495269290e"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/test-user.sql": {
+    "mtime": 1775694335.5728736,
+    "ast_hash": "54cf54583e6d687ca2ef2236e5d268bf",
+    "semantic_hash": "54cf54583e6d687ca2ef2236e5d268bf"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/middleware/errorHandler.ts": {
+    "mtime": 1775542287.4114268,
+    "ast_hash": "e83566c5ae9b54ea265a34b777a21544",
+    "semantic_hash": "e83566c5ae9b54ea265a34b777a21544"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260407060939_/migration.sql": {
+    "mtime": 1775542179.6736307,
+    "ast_hash": "4e054e1e341dbb5b3dfdfb23b17270f5",
+    "semantic_hash": "4e054e1e341dbb5b3dfdfb23b17270f5"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260407062214_add_user_name_to_reading_log/migration.sql": {
+    "mtime": 1775542934.3981495,
+    "ast_hash": "42bd0b6fcdc24e28025863243d2f828e",
+    "semantic_hash": "42bd0b6fcdc24e28025863243d2f828e"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260407065618_add_sold_donated_status/migration.sql": {
+    "mtime": 1775544978.3019626,
+    "ast_hash": "a602078e11e838c51368b149a6b0f241",
+    "semantic_hash": "a602078e11e838c51368b149a6b0f241"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260407070456_reading_log_1_to_n/migration.sql": {
+    "mtime": 1775546800.0300736,
+    "ast_hash": "b90a2eb0e7dcd9273c1a968b613475bc",
+    "semantic_hash": "b90a2eb0e7dcd9273c1a968b613475bc"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260408050221_add_read_status_to_reading_log/migration.sql": {
+    "mtime": 1775624637.9363327,
+    "ast_hash": "f2e6b14cc1518b0c7508b54ef0e28166",
+    "semantic_hash": "f2e6b14cc1518b0c7508b54ef0e28166"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260409001953_add_user_and_login_history/migration.sql": {
+    "mtime": 1775693993.8159635,
+    "ast_hash": "c0d54fba57df2c530b07236de4a97650",
+    "semantic_hash": "c0d54fba57df2c530b07236de4a97650"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260414041256_change_cover_url_to_text/migration.sql": {
+    "mtime": 1776139976.4513981,
+    "ast_hash": "8fd859210ac5dbc6f4ab5740c859c508",
+    "semantic_hash": "8fd859210ac5dbc6f4ab5740c859c508"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/migrations/20260414041753_expand_isbn_varchar/migration.sql": {
+    "mtime": 1776140273.0529747,
+    "ast_hash": "d3f13e3903ebdb0a1cee213de266fb6f",
+    "semantic_hash": "d3f13e3903ebdb0a1cee213de266fb6f"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/routes/index.ts": {
+    "mtime": 1775693830.0201128,
+    "ast_hash": "df3e7cc6fefb629223f285a5996493fe",
+    "semantic_hash": "df3e7cc6fefb629223f285a5996493fe"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/helpers.ts": {
+    "mtime": 1777511666.281953,
+    "ast_hash": "e1635595bdfd78144cdfd9ff050032d2",
+    "semantic_hash": "e1635595bdfd78144cdfd9ff050032d2"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/test-auth-api.ts": {
+    "mtime": 1777511418.96346,
+    "ast_hash": "5dfce21ee40bd8be62b09013f1810ecc",
+    "semantic_hash": "5dfce21ee40bd8be62b09013f1810ecc"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/test-book-api.ts": {
+    "mtime": 1777513391.427195,
+    "ast_hash": "cce9b15ff9c93c779ab179f334381f6e",
+    "semantic_hash": "cce9b15ff9c93c779ab179f334381f6e"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/test-memo-api.ts": {
+    "mtime": 1777511582.0254488,
+    "ast_hash": "b491622ba4cd23677e4a6818839f02a9",
+    "semantic_hash": "b491622ba4cd23677e4a6818839f02a9"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/test-reading-log-api.ts": {
+    "mtime": 1777511526.095825,
+    "ast_hash": "e32898469a6cf0e1cc65730422564f52",
+    "semantic_hash": "e32898469a6cf0e1cc65730422564f52"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/test-stats-api.ts": {
+    "mtime": 1778130099.61099,
+    "ast_hash": "c65ebccbf83589b5f3db545bc10431e7",
+    "semantic_hash": "c65ebccbf83589b5f3db545bc10431e7"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/types/session.d.ts": {
+    "mtime": 1775693815.8022344,
+    "ast_hash": "941c9c0fdbfdde1967d8581c0112a1ec",
+    "semantic_hash": "941c9c0fdbfdde1967d8581c0112a1ec"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/CLAUDE.md": {
+    "mtime": 1778740423.0361364,
+    "ast_hash": "0758ae573ffa9f38544e509f85d11c11",
+    "semantic_hash": "0758ae573ffa9f38544e509f85d11c11"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/README.md": {
+    "mtime": 1778228375.808292,
+    "ast_hash": "8ed5d4ccabdbe2962b49a0728123dc13",
+    "semantic_hash": "8ed5d4ccabdbe2962b49a0728123dc13"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.claude/agents/docs-agent.md": {
+    "mtime": 1776328650.3025231,
+    "ast_hash": "d2d8385effd712202f5aaf875d932aa9",
+    "semantic_hash": "d2d8385effd712202f5aaf875d932aa9"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.claude/agents/integration-test-agent.md": {
+    "mtime": 1777531664.9586465,
+    "ast_hash": "63e7f284df445299e20cf034c6086527",
+    "semantic_hash": "63e7f284df445299e20cf034c6086527"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.claude/agents/unit-test-agent.md": {
+    "mtime": 1777515376.7771153,
+    "ast_hash": "6d68a92040e680f66a58bc4a317b0346",
+    "semantic_hash": "6d68a92040e680f66a58bc4a317b0346"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.claude/skills/summarize-changes/SKILL.md": {
+    "mtime": 1778741204.2666235,
+    "ast_hash": "e81a5c3c495f088aa100975d8d2a09a3",
+    "semantic_hash": "e81a5c3c495f088aa100975d8d2a09a3"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/auth-api.md": {
+    "mtime": 1777443557.8860745,
+    "ast_hash": "07628e4a8cb7759f0a22d4da371369d0",
+    "semantic_hash": "07628e4a8cb7759f0a22d4da371369d0"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/books-api.md": {
+    "mtime": 1776329584.1597044,
+    "ast_hash": "9c0319ec438e9e939debe60cc287197d",
+    "semantic_hash": "9c0319ec438e9e939debe60cc287197d"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/memos-api.md": {
+    "mtime": 1777443510.0878303,
+    "ast_hash": "389d4d98e39e5e7b1a35fb47b283ddbb",
+    "semantic_hash": "389d4d98e39e5e7b1a35fb47b283ddbb"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/reading-logs-api.md": {
+    "mtime": 1776329760.6596637,
+    "ast_hash": "764e6acae1533dd703d9d5bb68ee2139",
+    "semantic_hash": "764e6acae1533dd703d9d5bb68ee2139"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/spec.md": {
+    "mtime": 1777443371.6727657,
+    "ast_hash": "fe99915ef18c556774e1eb66eee5e6a4",
+    "semantic_hash": "fe99915ef18c556774e1eb66eee5e6a4"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/docs/stats-api.md": {
+    "mtime": 1778130119.292261,
+    "ast_hash": "b7d8d808025d8dc076c02930d543e2ce",
+    "semantic_hash": "b7d8d808025d8dc076c02930d543e2ce"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/testplan-auth-api.md": {
+    "mtime": 1777510183.9383898,
+    "ast_hash": "69f7f84770e967cf4f981d9944e124ce",
+    "semantic_hash": "69f7f84770e967cf4f981d9944e124ce"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/testplan-book-api.md": {
+    "mtime": 1777510241.1956022,
+    "ast_hash": "3485173f00b7887b45011c000d301345",
+    "semantic_hash": "3485173f00b7887b45011c000d301345"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/testplan-memo-api.md": {
+    "mtime": 1777510333.4608245,
+    "ast_hash": "06d6b778e0d08c5cfd3081be1c108b5b",
+    "semantic_hash": "06d6b778e0d08c5cfd3081be1c108b5b"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/testplan-overview.md": {
+    "mtime": 1777510425.2562635,
+    "ast_hash": "8842e86ca92eb82d357cd1ac65e6f3da",
+    "semantic_hash": "8842e86ca92eb82d357cd1ac65e6f3da"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/testplan-reading-log-api.md": {
+    "mtime": 1777510284.8043163,
+    "ast_hash": "4123297af2f3c86d3dc99a416548b40a",
+    "semantic_hash": "4123297af2f3c86d3dc99a416548b40a"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/test/testplan-stats-api.md": {
+    "mtime": 1778130146.7182,
+    "ast_hash": "26a902826d0fff705208da9ba7851a7a",
+    "semantic_hash": "26a902826d0fff705208da9ba7851a7a"
+  }
+}

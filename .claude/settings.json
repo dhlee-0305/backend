@@ -1,6 +1,1 @@
-{
-  "statusLine": {
-    "type": "command",
-    "command": "bash /mnt/c/Downloads/workspace_react/bookbackend/.claude/statusline-command.sh"
-  }
-}
+{}

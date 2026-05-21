@@ -24,7 +24,9 @@
       "Bash(nc -zv 10.255.255.254 3306)",
       "Bash(nc -zv 127.0.0.1 3306)",
       "Skill(summarize-changes)",
-      "Skill(summarize-changes:*)"
+      "Skill(summarize-changes:*)",
+      "Bash(graphify export *)",
+      "Bash(graphify benchmark *)"
     ]
   }
 }

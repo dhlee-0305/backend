@@ -69,3 +69,15 @@ SESSION_SECRET="test-secret"
 - 인증/세션: express-session, bcrypt (salt rounds: 10)
 - ORM: Prisma + MySQL
 - 테스트: Jest + Supertest (ts-jest, `--runInBand` 필수)
+
+## graphify 지식 그래프
+
+코드나 문서에 대한 질문이 들어오면, **먼저** `/graphify query "질문"`으로
+그래프를 조회한 다음 답변할 것. 파일을 직접 읽기 전에 그래프에서 관련
+노드·엣지를 확인하면 컨텍스트를 훨씬 빠르게 잡을 수 있다.
+
+- 그래프 위치: `graphify-out/graph.json`
+- 쿼리: `/graphify query "질문"`
+- 경로 추적: `/graphify path "A" "B"`
+- 설명: `/graphify explain "노드명"`
+- 코드 변경 후: `/graphify . --update`
