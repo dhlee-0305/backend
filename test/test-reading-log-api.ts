@@ -21,10 +21,10 @@ async function createBook() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// TC-LOG-001: 독서 기록 등록 - 전체 필드 입력
+// TC-LOG-001: 독서 기록 등록 - 전체 사용 필드 입력
 // ─────────────────────────────────────────────────────────────
-describe('TC-LOG-001: 독서 기록 등록 - 전체 필드 입력', () => {
-  it('HTTP 201, bookId 연결·날짜 ISO 변환·모든 필드 반환', async () => {
+describe('TC-LOG-001: 독서 기록 등록 - 전체 사용 필드 입력', () => {
+  it('HTTP 201, bookId 연결 및 사용 필드 반환', async () => {
     const book = await createBook();
 
     const res = await request(app)
@@ -32,8 +32,6 @@ describe('TC-LOG-001: 독서 기록 등록 - 전체 필드 입력', () => {
       .send({
         userName: '홍길동',
         readStatus: 'READ',
-        startDate: '2024-01-10',
-        endDate: '2024-02-05',
         rating: 4.5,
         review: '인상 깊은 책이었습니다.',
       });
@@ -43,8 +41,6 @@ describe('TC-LOG-001: 독서 기록 등록 - 전체 필드 입력', () => {
     expect(res.body.data.bookId).toBe(book.id);
     expect(res.body.data.userName).toBe('홍길동');
     expect(res.body.data.readStatus).toBe('READ');
-    expect(res.body.data.startDate).toMatch(/^2024-01-10/);
-    expect(res.body.data.endDate).toMatch(/^2024-02-05/);
     expect(res.body.data.rating).toBe(4.5);
     expect(res.body.data.review).toBe('인상 깊은 책이었습니다.');
     expect(res.body.data.createdAt).toBeDefined();
@@ -65,8 +61,6 @@ describe('TC-LOG-002: 독서 기록 등록 - 선택 필드 모두 생략', () =>
     expect(res.status).toBe(201);
     expect(res.body.data.userName).toBeNull();
     expect(res.body.data.readStatus).toBeNull();
-    expect(res.body.data.startDate).toBeNull();
-    expect(res.body.data.endDate).toBeNull();
     expect(res.body.data.rating).toBeNull();
     expect(res.body.data.review).toBeNull();
   });
@@ -125,7 +119,7 @@ describe('TC-LOG-010: 독서 기록 수정 - 일부 필드 수정', () => {
     const book = await createBook();
     const logRes = await request(app)
       .post(`/api/books/${book.id}/reading-logs`)
-      .send({ userName: '홍길동', readStatus: 'READ', startDate: '2024-01-10', rating: 4.0 });
+      .send({ userName: '홍길동', readStatus: 'READ', rating: 4.0 });
     const logId = logRes.body.data.id;
     const originalUpdatedAt = logRes.body.data.updatedAt;
 
@@ -133,11 +127,10 @@ describe('TC-LOG-010: 독서 기록 수정 - 일부 필드 수정', () => {
 
     const res = await request(app)
       .put(`/api/reading-logs/${logId}`)
-      .send({ endDate: '2024-02-10', rating: 5.0, review: '다시 읽어도 좋은 책입니다.' });
+      .send({ rating: 5.0, review: '다시 읽어도 좋은 책입니다.' });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.data.endDate).toMatch(/^2024-02-10/);
     expect(res.body.data.rating).toBe(5.0);
     expect(res.body.data.review).toBe('다시 읽어도 좋은 책입니다.');
     expect(res.body.data.userName).toBe('홍길동');

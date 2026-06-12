@@ -1,6 +1,6 @@
 # 독서 기록 API
 
-특정 도서에 대한 독서 기록(독자, 읽기 상태, 기간, 별점, 리뷰)을 등록·조회·수정·삭제하는 API입니다.
+특정 도서에 대한 독서 기록(독자, 읽기 상태, 별점, 리뷰)을 등록·조회·수정·삭제하는 API입니다.
 
 ---
 
@@ -54,8 +54,6 @@ GET /api/books/1/reading-logs
 | `data[].bookId` | number | required | 연결된 도서 ID | `1` |
 | `data[].userName` | string \| null | required | 독자 이름 | `"홍길동"` |
 | `data[].readStatus` | string \| null | required | 읽기 상태 (`READ`, `EXCLUDED`) | `"READ"` |
-| `data[].startDate` | string \| null | required | 독서 시작일 (ISO 8601) | `"2024-01-10T00:00:00.000Z"` |
-| `data[].endDate` | string \| null | required | 독서 완료일 (ISO 8601) | `"2024-02-05T00:00:00.000Z"` |
 | `data[].rating` | number \| null | required | 별점 (0.0 ~ 5.0) | `4.5` |
 | `data[].review` | string \| null | required | 텍스트 리뷰 | `"인상 깊은 책이었습니다."` |
 | `data[].createdAt` | string | required | 기록 등록 일시 (ISO 8601) | `"2024-02-05T12:00:00.000Z"` |
@@ -78,8 +76,6 @@ GET /api/books/1/reading-logs
       "bookId": 1,
       "userName": "홍길동",
       "readStatus": "READ",
-      "startDate": "2024-06-01T00:00:00.000Z",
-      "endDate": "2024-06-20T00:00:00.000Z",
       "rating": 5.0,
       "review": "두 번째로 읽었는데 더 좋았습니다.",
       "createdAt": "2024-06-20T09:30:00.000Z",
@@ -90,8 +86,6 @@ GET /api/books/1/reading-logs
       "bookId": 1,
       "userName": "홍길동",
       "readStatus": "READ",
-      "startDate": "2024-01-10T00:00:00.000Z",
-      "endDate": "2024-02-05T00:00:00.000Z",
       "rating": 4.5,
       "review": "인상 깊은 책이었습니다.",
       "createdAt": "2024-02-05T12:00:00.000Z",
@@ -126,8 +120,6 @@ GET /api/books/1/reading-logs
 |------|------|------|------|------|
 | `userName` | string | optional | 독자 이름 | `"홍길동"` |
 | `readStatus` | string | optional | 읽기 상태 (`READ`, `EXCLUDED`) | `"READ"` |
-| `startDate` | string | optional | 독서 시작일 (ISO 8601 또는 날짜 문자열) | `"2024-01-10"` |
-| `endDate` | string | optional | 독서 완료일 (ISO 8601 또는 날짜 문자열) | `"2024-02-05"` |
 | `rating` | number | optional | 별점 (0.0 ~ 5.0, 소수점 1자리) | `4.5` |
 | `review` | string | optional | 텍스트 리뷰 | `"인상 깊은 책이었습니다."` |
 
@@ -140,8 +132,6 @@ Content-Type: application/json
 {
   "userName": "홍길동",
   "readStatus": "READ",
-  "startDate": "2024-01-10",
-  "endDate": "2024-02-05",
   "rating": 4.5,
   "review": "인상 깊은 책이었습니다."
 }
@@ -159,8 +149,6 @@ Content-Type: application/json
 | `data.bookId` | number | required | 연결된 도서 ID | `1` |
 | `data.userName` | string \| null | required | 독자 이름 | `"홍길동"` |
 | `data.readStatus` | string \| null | required | 읽기 상태 (`READ`, `EXCLUDED`) | `"READ"` |
-| `data.startDate` | string \| null | required | 독서 시작일 (ISO 8601) | `"2024-01-10T00:00:00.000Z"` |
-| `data.endDate` | string \| null | required | 독서 완료일 (ISO 8601) | `"2024-02-05T00:00:00.000Z"` |
 | `data.rating` | number \| null | required | 별점 (0.0 ~ 5.0) | `4.5` |
 | `data.review` | string \| null | required | 텍스트 리뷰 | `"인상 깊은 책이었습니다."` |
 | `data.createdAt` | string | required | 기록 등록 일시 (ISO 8601) | `"2024-02-05T12:00:00.000Z"` |
@@ -182,8 +170,6 @@ Content-Type: application/json
     "bookId": 1,
     "userName": "홍길동",
     "readStatus": "READ",
-    "startDate": "2024-01-10T00:00:00.000Z",
-    "endDate": "2024-02-05T00:00:00.000Z",
     "rating": 4.5,
     "review": "인상 깊은 책이었습니다.",
     "createdAt": "2024-02-05T12:00:00.000Z",
@@ -216,8 +202,6 @@ Content-Type: application/json
 |------|------|------|------|------|
 | `userName` | string | optional | 독자 이름 | `"홍길동"` |
 | `readStatus` | string | optional | 읽기 상태 (`READ`, `EXCLUDED`) | `"READ"` |
-| `startDate` | string | optional | 독서 시작일 (ISO 8601 또는 날짜 문자열) | `"2024-01-10"` |
-| `endDate` | string | optional | 독서 완료일 (ISO 8601 또는 날짜 문자열) | `"2024-02-10"` |
 | `rating` | number | optional | 별점 (0.0 ~ 5.0, 소수점 1자리) | `5.0` |
 | `review` | string | optional | 텍스트 리뷰 | `"다시 읽어도 좋은 책입니다."` |
 
@@ -228,7 +212,6 @@ PUT /api/reading-logs/1
 Content-Type: application/json
 
 {
-  "endDate": "2024-02-10",
   "rating": 5.0,
   "review": "다시 읽어도 좋은 책입니다."
 }
@@ -246,8 +229,6 @@ Content-Type: application/json
 | `data.bookId` | number | required | 연결된 도서 ID | `1` |
 | `data.userName` | string \| null | required | 독자 이름 | `"홍길동"` |
 | `data.readStatus` | string \| null | required | 읽기 상태 (`READ`, `EXCLUDED`) | `"READ"` |
-| `data.startDate` | string \| null | required | 독서 시작일 (ISO 8601) | `"2024-01-10T00:00:00.000Z"` |
-| `data.endDate` | string \| null | required | 독서 완료일 (ISO 8601) | `"2024-02-10T00:00:00.000Z"` |
 | `data.rating` | number \| null | required | 별점 (0.0 ~ 5.0) | `5.0` |
 | `data.review` | string \| null | required | 텍스트 리뷰 | `"다시 읽어도 좋은 책입니다."` |
 | `data.createdAt` | string | required | 기록 등록 일시 (ISO 8601) | `"2024-02-05T12:00:00.000Z"` |
@@ -270,8 +251,6 @@ Content-Type: application/json
     "bookId": 1,
     "userName": "홍길동",
     "readStatus": "READ",
-    "startDate": "2024-01-10T00:00:00.000Z",
-    "endDate": "2024-02-10T00:00:00.000Z",
     "rating": 5.0,
     "review": "다시 읽어도 좋은 책입니다.",
     "createdAt": "2024-02-05T12:00:00.000Z",

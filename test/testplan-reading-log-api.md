@@ -15,7 +15,6 @@
 ### 제외
 - 세션 인증 (현재 독서 기록 API는 인증 불필요)
 - 별점 소수점 이하 2자리 이상 입력 제한 (현재 구현 없음)
-- 독서 기간 유효성 검사 (startDate > endDate 금지 등 현재 구현 없음)
 
 ---
 
@@ -53,8 +52,6 @@
   {
     "userName": "홍길동",
     "readStatus": "READ",
-    "startDate": "2024-01-10",
-    "endDate": "2024-02-05",
     "rating": 4.5,
     "review": "인상 깊은 책이었습니다."
   }
@@ -62,7 +59,6 @@
 - **기대 결과:**
   - HTTP 201, `success: true`
   - `data.bookId` = 1
-  - `data.startDate`, `data.endDate` ISO 8601 형식 변환 확인
   - `data.rating: 4.5`
   - `data.createdAt`, `data.updatedAt` ISO 8601
 
@@ -75,7 +71,6 @@
 - **요청:** `{}`
 - **기대 결과:**
   - HTTP 201
-  - `data.userName`, `data.readStatus`, `data.startDate`, `data.endDate`, `data.rating`, `data.review` 모두 `null`
 
 ---
 
@@ -150,13 +145,15 @@
 - **전제조건:** id=1 독서 기록 존재
 - **요청:**
   ```json
-  { "endDate": "2024-02-10", "rating": 5.0, "review": "다시 읽어도 좋은 책입니다." }
+  {
+    "rating": 5.0,
+    "review": "다시 읽어도 좋은 책입니다."
+  }
   ```
 - **기대 결과:**
   - HTTP 200
-  - `data.endDate`, `data.rating`, `data.review` 변경 반영
+  - `data.rating`, `data.review` 변경 반영
   - `data.updatedAt` 이전보다 최신 시각
-  - 수정하지 않은 `userName`, `readStatus`, `startDate` 기존값 유지
 
 ---
 
@@ -222,5 +219,4 @@
 |------|------|
 | 별점 범위 검증 부재 | 0.0~5.0 외 값이 DB에 그대로 저장될 수 있음 - 결함 후보 |
 | 존재하지 않는 bookId 처리 | 컨트롤러에 사전 검증 없어 DB 외래키 오류가 500으로 반환됨 |
-| endDate < startDate 허용 | 날짜 역순 입력에 대한 검증 없음 - 데이터 오염 가능 |
 | Cascade 삭제 | Book 삭제 시 독서 기록도 삭제되므로 복구 불가 - 운영 주의 |

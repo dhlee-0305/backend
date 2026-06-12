@@ -28,7 +28,9 @@
       "Bash(graphify export *)",
       "Bash(graphify benchmark *)",
       "Bash(graphify query *)",
-      "Read(//home/dhlee/.claude/**)"
+      "Read(//home/dhlee/.claude/**)",
+      "Bash(git -C /mnt/c/Downloads/workspace_react/bookbackend diff)",
+      "Bash(git -C /mnt/c/Downloads/workspace_react/bookbackend diff --cached)"
     ]
   }
 }

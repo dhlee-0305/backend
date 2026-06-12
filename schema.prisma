@@ -77,15 +77,13 @@ model Book {
 }
 
 // ─────────────────────────────────────────
-// 독서 기록 (1도서 : 1기록)
+// 독서 기록 (1도서 : N기록)
 // ─────────────────────────────────────────
 model ReadingLog {
   id        Int       @id @default(autoincrement())
   bookId     Int
   userName   String?    @db.VarChar(100)
   readStatus ReadStatus?
-  startDate  DateTime?
-  endDate    DateTime?
   rating     Float?     // 0.0 ~ 5.0
   review     String?    @db.Text
   createdAt  DateTime   @default(now())

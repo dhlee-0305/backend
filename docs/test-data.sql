@@ -77,8 +77,6 @@ INSERT INTO reading_logs (
   bookId,
   userName,
   readStatus,
-  startDate,
-  endDate,
   rating,
   review,
   updatedAt
@@ -87,8 +85,6 @@ INSERT INTO reading_logs (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0001'),
     'tester_kim',
     'READ',
-    '2026-03-02 08:00:00',
-    '2026-03-10 22:00:00',
     4.5,
     'Useful examples for reviewing practical refactoring points.',
     NOW(3)
@@ -96,8 +92,6 @@ INSERT INTO reading_logs (
   (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0002'),
     'tester_kim',
-    NULL,
-    '2026-03-16 07:30:00',
     NULL,
     4.0,
     'Still reading, but the habit design section is especially useful.',
@@ -107,8 +101,6 @@ INSERT INTO reading_logs (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0003'),
     'reader_lee',
     'EXCLUDED',
-    '2026-04-01 21:00:00',
-    NULL,
     NULL,
     'Previewing this for next months reading club selection.',
     NOW(3)
@@ -117,8 +109,6 @@ INSERT INTO reading_logs (
     (SELECT id FROM books WHERE isbn = 'TEST-ISBN-0004'),
     'review_park',
     'READ',
-    '2026-01-03 11:00:00',
-    '2026-01-15 18:00:00',
     5.0,
     'Added a five star review to help test stats screens.',
     NOW(3)

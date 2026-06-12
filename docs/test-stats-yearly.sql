@@ -93,30 +93,28 @@ INSERT INTO books (
   ('[STATS] null user book', 'Stats Author', 'Stats Pub', 'STAT-YEAR-0011', 'Stats', NULL, '2026-11-10 00:00:00.000', 'OWNED', '2026-11-10 00:00:00.000', NOW(3)),
   ('[STATS] unfinished tester book', 'Stats Author', 'Stats Pub', 'STAT-YEAR-0012', 'Stats', NULL, '2026-12-10 00:00:00.000', 'OWNED', '2026-12-10 00:00:00.000', NOW(3));
 
--- Insert reading logs. The stats API uses createdAt, not endDate.
+-- Insert reading logs. The stats API uses createdAt.
 INSERT INTO reading_logs (
   bookId,
   userName,
   readStatus,
-  startDate,
-  endDate,
   rating,
   review,
   createdAt,
   updatedAt
 ) VALUES
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0001'), 'tester@example.com', 'READ', '2024-01-01 00:00:00.000', '2024-01-10 00:00:00.000', 4.0, 'Tester yearly stats 2024 #1', '2024-01-10 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0002'), 'tester@example.com', 'READ', '2024-11-01 00:00:00.000', '2024-11-20 00:00:00.000', 4.5, 'Tester yearly stats 2024 #2', '2024-11-20 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0003'), 'tester@example.com', 'READ', '2025-03-01 00:00:00.000', '2025-03-15 00:00:00.000', 5.0, 'Tester yearly stats 2025 #1', '2025-03-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0004'), 'tester@example.com', 'READ', '2026-04-01 00:00:00.000', '2026-04-15 00:00:00.000', 3.5, 'Tester yearly stats 2026 #1', '2026-04-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0005'), 'tester@example.com', 'READ', '2026-05-01 00:00:00.000', '2026-05-15 00:00:00.000', 4.0, 'Tester yearly stats 2026 #2', '2026-05-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0006'), 'tester@example.com', 'READ', '2026-06-01 00:00:00.000', '2026-06-15 00:00:00.000', 4.5, 'Tester yearly stats 2026 #3', '2026-06-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0007'), 'tester@example.com', 'EXCLUDED', '2026-07-01 00:00:00.000', NULL, NULL, 'Should not count because readStatus is EXCLUDED', '2026-07-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0008'), 'reader@example.com', 'READ', '2023-08-01 00:00:00.000', '2023-08-15 00:00:00.000', 4.0, 'Reader yearly stats 2023 #1', '2023-08-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0009'), 'reader@example.com', 'READ', '2026-09-01 00:00:00.000', '2026-09-15 00:00:00.000', 4.5, 'Reader yearly stats 2026 #1', '2026-09-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0010'), 'reader@example.com', 'READ', '2026-10-01 00:00:00.000', '2026-10-15 00:00:00.000', 5.0, 'Reader yearly stats 2026 #2', '2026-10-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0011'), NULL, 'READ', '2026-11-01 00:00:00.000', '2026-11-15 00:00:00.000', 3.0, 'Should not count because userName is NULL', '2026-11-15 09:00:00.000', NOW(3)),
-  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0012'), 'tester@example.com', NULL, '2026-12-01 00:00:00.000', NULL, NULL, 'Should not count because readStatus is NULL', '2026-12-15 09:00:00.000', NOW(3));
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0001'), 'tester@example.com', 'READ', 4.0, 'Tester yearly stats 2024 #1', '2024-01-10 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0002'), 'tester@example.com', 'READ', 4.5, 'Tester yearly stats 2024 #2', '2024-11-20 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0003'), 'tester@example.com', 'READ', 5.0, 'Tester yearly stats 2025 #1', '2025-03-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0004'), 'tester@example.com', 'READ', 3.5, 'Tester yearly stats 2026 #1', '2026-04-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0005'), 'tester@example.com', 'READ', 4.0, 'Tester yearly stats 2026 #2', '2026-05-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0006'), 'tester@example.com', 'READ', 4.5, 'Tester yearly stats 2026 #3', '2026-06-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0007'), 'tester@example.com', 'EXCLUDED', NULL, 'Should not count because readStatus is EXCLUDED', '2026-07-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0008'), 'reader@example.com', 'READ', 4.0, 'Reader yearly stats 2023 #1', '2023-08-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0009'), 'reader@example.com', 'READ', 4.5, 'Reader yearly stats 2026 #1', '2026-09-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0010'), 'reader@example.com', 'READ', 5.0, 'Reader yearly stats 2026 #2', '2026-10-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0011'), NULL, 'READ', 3.0, 'Should not count because userName is NULL', '2026-11-15 09:00:00.000', NOW(3)),
+  ((SELECT id FROM books WHERE isbn = 'STAT-YEAR-0012'), 'tester@example.com', NULL, NULL, 'Should not count because readStatus is NULL', '2026-12-15 09:00:00.000', NOW(3));
 
 COMMIT;
 

@@ -109,7 +109,7 @@ Prisma 모델은 다음과 같다.
 | `User` | `id`, `email`, `password`, `createdAt` | `email` unique, DB 테이블명 `users` |
 | `LoginHistory` | `id`, `email`, `success`, `ipAddress`, `attemptAt` | 로그인 시도 기록, DB 테이블명 `login_history` |
 | `Book` | `title`, `author`, `publisher`, `isbn`, `genre`, `coverUrl`, `purchaseDate`, `status` | `isbn` unique, `ReadingLog[]`, `Memo[]`, DB 테이블명 `books` |
-| `ReadingLog` | `bookId`, `userName`, `readStatus`, `startDate`, `endDate`, `rating`, `review` | `Book`과 N:1, `onDelete: Cascade`, DB 테이블명 `reading_logs` |
+| `ReadingLog` | `bookId`, `userName`, `readStatus`, `rating`, `review` | `Book`과 N:1, `onDelete: Cascade`, DB 테이블명 `reading_logs` |
 | `Memo` | `bookId`, `page`, `content`, `type` | `Book`과 N:1, `onDelete: Cascade`, DB 테이블명 `memos` |
 
 Enum은 다음과 같다.
@@ -197,7 +197,7 @@ Enum은 다음과 같다.
 
 - 서비스 계층 없이 컨트롤러가 Prisma를 직접 호출하므로 작은 코드베이스에는 단순하지만, 도메인 로직이 커질 경우 컨트롤러 비대화 가능성이 있다.
 - `tsconfig.json`의 `strict`는 `false`이다.
-- 통계의 연도별 독서량은 `ReadingLog.createdAt` 기준이다. `endDate` 기준이 아니다.
+- 통계의 연도별 독서량은 `ReadingLog.createdAt` 기준이다.
 - `avgRating`은 로그인 사용자 기준이 아니라 전체 독서 기록의 평균 별점이다.
 - `Book` 삭제 시 연결된 `ReadingLog`, `Memo`는 cascade 삭제된다.
 - 최초 마이그레이션에는 `reading_logs.bookId` unique가 있었으나 이후 마이그레이션에서 제거되어 현재 스키마는 도서 1권에 독서 기록 N개를 허용한다.

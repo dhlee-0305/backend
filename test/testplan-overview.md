@@ -157,5 +157,4 @@
 | enum 유효성 검사 부재 | 잘못된 status, type, readStatus 값이 Prisma 오류로 반환됨 | 도서, 메모, 독서기록 |
 | 외래키 존재 여부 사전 검증 부재 | 없는 bookId로 하위 리소스 등록 시 DB 오류 → 500 반환 | 독서기록, 메모 |
 | 별점 범위 검증 부재 | 0.0~5.0 외 값 저장 가능 | 독서기록 |
-| 독서 기간 역순 허용 | startDate > endDate 입력 가능 | 독서기록 |
 | 세션 시크릿 기본값 | `SESSION_SECRET=changeme` 운영 사용 불가 | 인증 |

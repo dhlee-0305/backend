@@ -80,8 +80,6 @@ GET /api/books?status=OWNED&genre=소설&search=해리&readStatus=READ&userName=
 |------|------|------|------|------|
 | `readStatus` | string \| null | required | 읽기 상태. `READ` \| `EXCLUDED` | `"READ"` |
 | `rating` | number \| null | required | 별점 (0.0 ~ 5.0) | `4.5` |
-| `startDate` | string \| null | required | 독서 시작일 (ISO 8601) | `"2024-02-01T00:00:00.000Z"` |
-| `endDate` | string \| null | required | 독서 완료일 (ISO 8601) | `"2024-02-20T00:00:00.000Z"` |
 | `userName` | string \| null | required | 독자 이름 | `"홍길동"` |
 
 **data[]._count 필드**
@@ -118,8 +116,6 @@ GET /api/books?status=OWNED&genre=소설&search=해리&readStatus=READ&userName=
         {
           "readStatus": "READ",
           "rating": 4.5,
-          "startDate": "2024-02-01T00:00:00.000Z",
-          "endDate": "2024-02-20T00:00:00.000Z",
           "userName": "홍길동"
         }
       ],
@@ -191,8 +187,6 @@ GET /api/books/1
 | `bookId` | number | required | 도서 ID | `1` |
 | `userName` | string \| null | required | 독자 이름 | `"홍길동"` |
 | `readStatus` | string \| null | required | 읽기 상태. `READ` \| `EXCLUDED` | `"READ"` |
-| `startDate` | string \| null | required | 독서 시작일 (ISO 8601) | `"2024-02-01T00:00:00.000Z"` |
-| `endDate` | string \| null | required | 독서 완료일 (ISO 8601) | `"2024-02-20T00:00:00.000Z"` |
 | `rating` | number \| null | required | 별점 (0.0 ~ 5.0) | `4.5` |
 | `review` | string \| null | required | 텍스트 리뷰 | `"정말 재미있는 책입니다."` |
 | `createdAt` | string | required | 등록일시 (ISO 8601) | `"2024-02-20T21:00:00.000Z"` |
@@ -240,8 +234,6 @@ GET /api/books/1
         "bookId": 1,
         "userName": "홍길동",
         "readStatus": "READ",
-        "startDate": "2024-02-01T00:00:00.000Z",
-        "endDate": "2024-02-20T00:00:00.000Z",
         "rating": 4.5,
         "review": "정말 재미있는 책입니다.",
         "createdAt": "2024-02-20T21:00:00.000Z",
