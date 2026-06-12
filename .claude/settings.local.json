@@ -30,7 +30,8 @@
       "Bash(graphify query *)",
       "Read(//home/dhlee/.claude/**)",
       "Bash(git -C /mnt/c/Downloads/workspace_react/bookbackend diff)",
-      "Bash(git -C /mnt/c/Downloads/workspace_react/bookbackend diff --cached)"
+      "Bash(git -C /mnt/c/Downloads/workspace_react/bookbackend diff --cached)",
+      "Bash(git diff *)"
     ]
   }
 }
