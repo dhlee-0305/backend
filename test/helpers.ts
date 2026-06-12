@@ -31,8 +31,32 @@ export async function closeDb() {
   await prisma.$disconnect();
 }
 
+function assertSafeTestDatabase() {
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('cleanDb() can only run when NODE_ENV is "test".');
+  }
+
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error('cleanDb() requires DATABASE_URL.');
+  }
+
+  let databaseName: string;
+  try {
+    databaseName = new URL(databaseUrl).pathname.replace(/^\//, '');
+  } catch {
+    throw new Error('cleanDb() requires a valid DATABASE_URL.');
+  }
+
+  if (!databaseName.toLowerCase().includes('test')) {
+    throw new Error(`cleanDb() refused to run against non-test database: ${databaseName}`);
+  }
+}
+
 // 테스트 DB 전체 초기화 (테이블 의존 순서 고려)
 export async function cleanDb() {
+  assertSafeTestDatabase();
+
   await prisma.memo.deleteMany();
   await prisma.readingLog.deleteMany();
   await prisma.book.deleteMany();

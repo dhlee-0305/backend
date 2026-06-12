@@ -160,9 +160,9 @@
     "semantic_hash": "941c9c0fdbfdde1967d8581c0112a1ec"
   },
   "/mnt/c/Downloads/workspace_react/bookbackend/CLAUDE.md": {
-    "mtime": 1778740423.0361364,
-    "ast_hash": "0758ae573ffa9f38544e509f85d11c11",
-    "semantic_hash": "0758ae573ffa9f38544e509f85d11c11"
+    "mtime": 1779325920.2970073,
+    "ast_hash": "47c3bcc6bdb688102b89b39a1ba39d87",
+    "semantic_hash": ""
   },
   "/mnt/c/Downloads/workspace_react/bookbackend/README.md": {
     "mtime": 1778228375.808292,
@@ -248,5 +248,10 @@
     "mtime": 1778130146.7182,
     "ast_hash": "26a902826d0fff705208da9ba7851a7a",
     "semantic_hash": "26a902826d0fff705208da9ba7851a7a"
+  },
+  "/mnt/c/Downloads/workspace_react/bookbackend/.vscode/settings.json": {
+    "mtime": 1779329738.9612405,
+    "ast_hash": "0cdd39bc7cad9b00c0586e9647ff5923",
+    "semantic_hash": ""
   }
 }

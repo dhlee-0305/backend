@@ -21,3 +21,6 @@ Thumbs.db
 
 # 임시 파일
 mnt/
+
+# graphify
+graphify-out/

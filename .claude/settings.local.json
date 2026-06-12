@@ -26,7 +26,9 @@
       "Skill(summarize-changes)",
       "Skill(summarize-changes:*)",
       "Bash(graphify export *)",
-      "Bash(graphify benchmark *)"
+      "Bash(graphify benchmark *)",
+      "Bash(graphify query *)",
+      "Read(//home/dhlee/.claude/**)"
     ]
   }
 }
