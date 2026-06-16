@@ -64,6 +64,10 @@ SESSION_SECRET="test-secret"
 ## API 명세서
 @docs/spec.md
 
+## 커밋 메시지
+
+커밋 메시지 작성 요청을 받으면 `.claude/skills/summarize-changes/SKILL.md`를 기준으로 한다. 상세 규칙은 중복 작성하지 않고 원본 지침을 확인한다.
+
 ## 사용 기술
 - TypeScript + Express
 - 인증/세션: express-session, bcrypt (salt rounds: 10)
