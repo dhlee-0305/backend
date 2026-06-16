@@ -2,6 +2,10 @@
 
 이 문서는 현재 저장소의 서비스 코드와 문서를 조사한 초안이다. 민감정보와 운영 데이터는 포함하지 않으며, 환경변수는 이름만 언급한다.
 
+## 문서 역할
+
+이 문서는 조사 당시 확인한 근거와 미확정 질문을 남기는 스냅샷이다. 최신 구조 설명은 [ARCHITECTURE.md](./ARCHITECTURE.md), 엔드포인트 목록의 기준은 [spec.md](./spec.md)의 API 문서 섹션을 따른다.
+
 ## 조사 목표와 범위
 
 ### 확인한 사실
@@ -63,22 +67,12 @@
 
 ### 확인한 사실
 
-서비스는 단일 Express 애플리케이션이다. 요청 흐름은 다음과 같다.
+상세 구조와 요청 흐름은 [ARCHITECTURE.md](./ARCHITECTURE.md)를 기준으로 관리한다. 조사 당시 핵심 관찰은 다음과 같다.
 
-```text
-Client
-  -> index.ts
-  -> 공통 미들웨어
-  -> routes/index.ts
-  -> controllers/*.ts
-  -> config/prisma.ts
-  -> MySQL
-```
-
+- 서비스는 단일 Express 애플리케이션이다.
 - 별도 service/repository 계층은 확인되지 않는다. 컨트롤러가 Prisma Client를 직접 호출한다.
 - 공통 라우트 prefix는 `/api`이다.
 - `/health`는 DB 연결 확인 없이 상태와 timestamp만 반환한다.
-- 공통 응답은 대체로 `{ success, data }`, 목록에서는 `{ success, data, total }`, 실패에서는 `{ success: false, message }` 형식을 따른다.
 
 ## 관련 사용자 흐름 또는 시스템 흐름
 
@@ -150,13 +144,7 @@ Client
 
 ### 주요 API
 
-확인한 근거: `routes/index.ts`, `README.md`, `docs/*-api.md`
-
-- 인증: `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`
-- 도서: `GET /api/books`, `GET /api/books/:id`, `POST /api/books`, `PUT /api/books/:id`, `DELETE /api/books/:id`
-- 독서 기록: `GET /api/books/:bookId/reading-logs`, `POST /api/books/:bookId/reading-logs`, `PUT /api/reading-logs/:id`, `DELETE /api/reading-logs/:id`
-- 메모: `GET /api/books/:bookId/memos`, `POST /api/books/:bookId/memos`, `PUT /api/memos/:id`, `DELETE /api/memos/:id`
-- 통계: `GET /api/stats`
+엔드포인트 목록은 [spec.md](./spec.md)의 API 문서 섹션을 기준으로 관리한다. 조사 근거는 `routes/index.ts`와 `docs/*-api.md`이다.
 
 ### 데이터 모델
 

@@ -102,30 +102,12 @@ API 기본 경로: `http://localhost:4000/api`
 
 ---
 
-## API 엔드포인트 요약
+## API 문서
 
-| 도메인 | Method | URL | 설명 |
-|--------|--------|-----|------|
-| 인증 | POST | `/api/auth/signup` | 회원가입 |
-| 인증 | POST | `/api/auth/login` | 로그인 |
-| 인증 | POST | `/api/auth/logout` | 로그아웃 |
-| 인증 | GET | `/api/auth/me` | 현재 사용자 조회 |
-| 도서 | GET | `/api/books` | 도서 목록 조회 (필터·검색·정렬·페이지네이션) |
-| 도서 | GET | `/api/books/:id` | 도서 상세 조회 |
-| 도서 | POST | `/api/books` | 도서 등록 |
-| 도서 | PUT | `/api/books/:id` | 도서 수정 |
-| 도서 | DELETE | `/api/books/:id` | 도서 삭제 |
-| 독서 기록 | GET | `/api/books/:bookId/reading-logs` | 독서 기록 목록 |
-| 독서 기록 | POST | `/api/books/:bookId/reading-logs` | 독서 기록 등록 |
-| 독서 기록 | PUT | `/api/reading-logs/:id` | 독서 기록 수정 |
-| 독서 기록 | DELETE | `/api/reading-logs/:id` | 독서 기록 삭제 |
-| 메모 | GET | `/api/books/:bookId/memos` | 메모 목록 조회 |
-| 메모 | POST | `/api/books/:bookId/memos` | 메모 등록 |
-| 메모 | PUT | `/api/memos/:id` | 메모 수정 |
-| 메모 | DELETE | `/api/memos/:id` | 메모 삭제 |
-| 통계 | GET | `/api/stats` | 전체 통계 조회 |
+엔드포인트 목록의 기준 문서는 [docs/spec.md](docs/spec.md)입니다.
 
-> 상세 Request/Response 명세는 [docs/spec.md](docs/spec.md)를 참고하세요.
+- 도메인별 상세 Request/Response 명세는 `docs/*-api.md` 문서를 참고하세요.
+- README에는 API 목록을 중복 관리하지 않습니다.
 
 ---
 
