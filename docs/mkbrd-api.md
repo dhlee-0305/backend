@@ -20,9 +20,12 @@
 - 카테고리: `AI`, `관리`, `설계`, `기타`.
 - 제목은 `.md` 확장자를 포함하는 파일명이다. 최대 240 UTF-8 바이트이며 경로 문자, 제어 문자, 선행 마침표 및 Windows 예약 파일명은 허용하지 않는다.
 - 같은 카테고리의 파일명은 유일하다. DB의 기존 MySQL collation에 따라 대소문자도 중복으로 취급될 수 있다.
-- 문서 메타데이터는 `mkbrd`, 변경 이력은 `mkbrd_hist`에 저장한다. 크기는 서버에서 계산한 UTF-8 바이트 수이다.
+- 문서 메타데이터는 `mkbrd`, 변경 이력은 `mkbrd_hist`에 저장한다. 제목은 업로드한 원본 파일명이며 크기는 업로드한 파일의 실제 바이트 수이다. 본문을 DB에 저장하지 않으므로 기존 테이블 컬럼과 데이터는 그대로 사용한다.
 - 이력 필드: `id`, `documentId`, `userId`, `action` (`등록`, `수정`, `삭제`), `createdAt`. `userId`는 요청 본문 대신 로그인 세션에서 가져온다. 문서를 삭제해도 이력은 유지된다.
-- 본문은 JSON의 `content` 문자열로 전송한다. multipart 파일 업로드는 지원하지 않는다. 기존 Express JSON 요청 크기 제한(기본 100KB)이 적용된다.
+- 등록·수정은 `multipart/form-data`를 사용한다. `file` 필드로 UTF-8 `.md` 파일 한 개를 업로드하며 파일 크기는 최대 10MB (10,485,760바이트)이다. 빈 파일도 허용한다.
+- 파일은 UTF-8 유효성을 확인한 뒤 BOM·줄바꿈을 포함한 원본 바이트 그대로 저장한다. 확장자로 Markdown 형식을 검증하며 MIME type은 제한하지 않는다. 잘못된 UTF-8 및 NUL 문자를 포함한 파일은 거부한다.
+- JSON `content`와 별도 `title` 입력은 지원하지 않는다. 업로드 파일명이 제목이 된다. multipart의 텍스트 필드는 `category` 한 개만 허용한다.
+- 브라우저에서는 `FormData`를 사용하고 Content-Type을 직접 지정하지 않는다. 클라이언트가 multipart boundary를 생성하도록 한다.
 
 ---
 
@@ -66,8 +69,8 @@ GET /api/mkbrd?category=AI&page=1&limit=10
 |------|------|------|------|------|
 | `id` | number | required | 문서 ID (자동 증가) | `1` |
 | `category` | string | required | 카테고리 | `AI` |
-| `title` | string | required | 제목 및 파일명 | `안내.md` |
-| `size` | number | required | UTF-8 파일 크기 (바이트) | `8` |
+| `title` | string | required | 업로드 원본 파일명 (제목) | `안내.md` |
+| `size` | number | required | 업로드 파일의 실제 크기 (바이트) | `8` |
 | `createdAt` | string | required | 등록일시 (ISO 8601) | `2026-11-11T00:00:00.000Z` |
 | `updatedAt` | string | required | 수정일시 (ISO 8601) | `2026-11-11T00:00:00.000Z` |
 
@@ -160,20 +163,22 @@ GET /api/mkbrd/1
 
 인증 필요 여부: 로그인 세션 필요
 
-**Body** (application/json)
+**Body** (multipart/form-data)
 
 | 필드 | 타입 | 필수 | 설명 | 예시 |
 |------|------|------|------|------|
 | `category` | string | required | 허용된 카테고리 | `AI` |
-| `title` | string | required | `.md` 파일명 | `안내.md` |
-| `content` | string | required | Markdown 본문, 빈 문자열 허용 | `# 안내` |
+| `file` | file | required | UTF-8 Markdown 파일 한 개 (최대 10MB) | `안내.md` |
 
-`id`, `size`, 날짜, `userId`는 클라이언트에서 지정하지 않는다.
+`title`, `id`, `size`, 날짜, `userId`는 클라이언트에서 지정하지 않는다. 업로드 파일명이 `title`에 저장된다.
 
 ### Request Sample
 
-```json
-{ "category": "AI", "title": "안내.md", "content": "# 안내" }
+```bash
+curl -X POST http://localhost:4000/api/mkbrd \
+  -b cookies.txt \
+  -F 'category=AI' \
+  -F 'file=@./안내.md;type=text/markdown'
 ```
 
 ### Response
@@ -184,9 +189,11 @@ GET /api/mkbrd/1
 
 | 상태 코드 | 메시지 | 발생 조건 |
 |-----------|--------|-----------|
-| `400` | 입력 검증 메시지 | 필수 필드 누락 또는 잘못된 형식 |
+| `400` | 입력 검증 메시지 | 필수 필드 누락, 파일명/UTF-8 오류, 추가 필드/복수 파일 또는 잘못된 multipart |
 | `401` | `로그인이 필요합니다.` | 로그인하지 않음 |
 | `409` | `같은 카테고리에 동일한 파일명이 존재합니다.` | DB 중복 또는 기존 파일 존재 |
+| `413` | `파일 크기는 10MB 이하여야 합니다.` | 파일이 10MB 초과 |
+| `415` | `multipart/form-data 형식으로 파일을 업로드해 주세요.` | JSON 등 다른 요청 형식 |
 | `500` | `문서 처리 실패` | DB, 이력 저장 또는 파일 쓰기 오류 |
 
 ### Response Sample
@@ -206,7 +213,7 @@ GET /api/mkbrd/1
 
 ## PUT /api/mkbrd/:id
 
-지정한 필드만 변경하고 `수정` 이력을 기록한다. 제목 또는 카테고리가 바뀌면 파일도 이동한다. `content` 생략 시 기존 본문을 유지한다.
+새 파일로 교체하거나 카테고리를 변경하고 `수정` 이력을 기록한다. 파일 업로드 시 새 원본 파일명으로 제목이 변경되며 크기도 다시 계산한다. 카테고리만 전송하면 기존 파일명과 원본 바이트를 유지하면서 파일을 이동한다.
 
 ### Request
 
@@ -214,23 +221,28 @@ GET /api/mkbrd/1
 
 **Path Parameters**: `id` (필수), 상세 조회와 동일.
 
-**Body** (application/json)
+**Body** (multipart/form-data)
 
 | 필드 | 타입 | 필수 | 설명 | 예시 |
 |------|------|------|------|------|
 | `category` | string | 선택 | 새 카테고리 | `설계` |
-| `title` | string | 선택 | 새 `.md` 파일명 | `설계.md` |
-| `content` | string | 선택 | 새 Markdown 본문, 빈 문자열은 본문 비우기 | `# 설계` |
+| `file` | file | 선택 | 교체할 UTF-8 `.md` 파일 한 개 (최대 10MB) | `설계.md` |
 
-세 필드 중 하나 이상 필요하며 `null`은 허용하지 않는다.
+둘 중 하나 이상 필요하다. 파일만 전송하면 기존 카테고리를 유지한다. 카테고리만 변경할 때도 multipart/form-data를 사용한다. 파일명만 바꾸려면 변경된 이름의 파일을 다시 업로드한다.
 
 ### Request Sample
 
-```http
-PUT /api/mkbrd/1
-Content-Type: application/json
+```bash
+curl -X PUT http://localhost:4000/api/mkbrd/1 \
+  -b cookies.txt \
+  -F 'category=설계' \
+  -F 'file=@./설계.md;type=text/markdown'
+```
 
-{ "category": "설계", "title": "설계.md" }
+카테고리만 변경:
+
+```bash
+curl -X PUT http://localhost:4000/api/mkbrd/1 -b cookies.txt -F 'category=관리'
 ```
 
 ### Response
@@ -241,10 +253,12 @@ Content-Type: application/json
 
 | 상태 코드 | 메시지 | 발생 조건 |
 |-----------|--------|-----------|
-| `400` | 입력 검증 메시지 | 잘못된 ID/필드 또는 변경 항목 없음 |
+| `400` | 입력 검증 메시지 | 잘못된 ID/파일명/UTF-8, 추가 필드/복수 파일, 잘못된 multipart 또는 변경 항목 없음 |
 | `401` | `로그인이 필요합니다.` | 로그인하지 않음 |
 | `404` | `문서를 찾을 수 없습니다.` | 해당 문서 없음 |
 | `409` | `같은 카테고리에 동일한 파일명이 존재합니다.` | 변경할 파일명 중복 |
+| `413` | `파일 크기는 10MB 이하여야 합니다.` | 파일이 10MB 초과 |
+| `415` | `multipart/form-data 형식으로 파일을 업로드해 주세요.` | JSON 등 다른 요청 형식 |
 | `500` | `문서 처리 실패` | DB, 이력 또는 파일 처리 오류 |
 
 ---

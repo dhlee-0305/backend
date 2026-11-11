@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { TextDecoder } from 'util';
 import prisma from '../config/prisma';
 import { BoardError, categories, mutateDocument, readDocument, serialize } from '../services/mkbrdService';
 
@@ -11,19 +12,30 @@ function integer(value: unknown, name: string, max = 2147483647): number {
 function category(value: unknown) {
   if (typeof value !== 'string' || !categories.includes(value)) throw new BoardError(400, '카테고리는 AI, 관리, 설계, 기타 중 하나여야 합니다.');
 }
-function validate(body: any, creating: boolean) {
-  if (!body || typeof body !== 'object' || Array.isArray(body)) throw new BoardError(400, '요청 본문이 올바르지 않습니다.');
-  if (!creating && !['category', 'title', 'content'].some(key => body[key] !== undefined)) throw new BoardError(400, '수정할 항목을 입력해 주세요.');
+function validate(req: Request, creating: boolean) {
+  const body = req.body ?? {};
+  if (Object.keys(body).some(key => key !== 'category')) {
+    throw new BoardError(400, 'category와 file 필드만 전송할 수 있습니다. 제목은 업로드 파일명을 사용합니다.');
+  }
   if (creating || body.category !== undefined) category(body.category);
-  if (creating || body.title !== undefined) {
-    if (typeof body.title !== 'string' || !body.title.endsWith('.md') || body.title.trim() !== body.title ||
-      Buffer.byteLength(body.title, 'utf8') > 240 || /[<>:"/\\|?*\x00-\x1f\x7f]/.test(body.title) ||
-      body.title.startsWith('.') || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])\./i.test(body.title)) {
-      throw new BoardError(400, '제목은 경로 문자가 없는 240바이트 이하의 .md 파일명이어야 합니다.');
+  if (creating && !req.file) throw new BoardError(400, 'Markdown 파일(file)을 업로드해 주세요.');
+  if (!creating && !req.file && body.category === undefined) throw new BoardError(400, '카테고리 또는 새 파일을 전송해 주세요.');
+  let title: string | undefined;
+  if (req.file) {
+    title = req.file.originalname;
+    if (!title.endsWith('.md') || title.trim() !== title ||
+      Buffer.byteLength(title, 'utf8') > 240 || /[<>:"/\\|?*\x00-\x1f\x7f]/.test(title) ||
+      title.startsWith('.') || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])\./i.test(title)) {
+      throw new BoardError(400, '파일명은 경로 문자가 없는 240바이트 이하의 .md 파일명이어야 합니다.');
+    }
+    try {
+      new TextDecoder('utf-8', { fatal: true }).decode(req.file.buffer);
+      if (req.file.buffer.includes(0)) throw new Error('binary file');
+    } catch {
+      throw new BoardError(400, 'UTF-8 형식의 Markdown 파일만 업로드할 수 있습니다.');
     }
   }
-  if ((creating || body.content !== undefined) && typeof body.content !== 'string') throw new BoardError(400, 'content는 Markdown 문자열이어야 합니다.');
-  return { category: body.category, title: body.title, content: body.content };
+  return { category: body.category, title, file: req.file?.buffer };
 }
 function fail(res: Response, error: any) {
   if (error instanceof BoardError) return res.status(error.status).json({ success: false, message: error.message });
@@ -58,7 +70,7 @@ function mutation(action: '등록' | '수정' | '삭제') {
     if (!req.session.userId) return res.status(401).json({ success: false, message: '로그인이 필요합니다.' });
     try {
       const id = action === '등록' ? undefined : integer(req.params.id, 'id');
-      const input = action === '삭제' ? {} : validate(req.body, action === '등록');
+      const input = action === '삭제' ? {} : validate(req, action === '등록');
       const data = await serialize(() => mutateDocument(action, req.session.userId, id, input));
       return action === '삭제'
         ? res.json({ success: true, message: '문서가 삭제되었습니다.' })

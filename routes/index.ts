@@ -13,12 +13,14 @@ import { signup, login, logout, me } from '../controllers/authController';
 
 import { getDocuments, getDocument, createDocument, updateDocument, deleteDocument } from '../controllers/mkbrdController';
 
+import { documentUpload } from '../middleware/mkbrdUpload';
+
 const router = Router();
 
 router.get('/mkbrd', getDocuments);
 router.get('/mkbrd/:id', getDocument);
-router.post('/mkbrd', createDocument);
-router.put('/mkbrd/:id', updateDocument);
+router.post('/mkbrd', documentUpload, createDocument);
+router.put('/mkbrd/:id', documentUpload, updateDocument);
 router.delete('/mkbrd/:id', deleteDocument);
 
 // ─── 도서 API ─────────────────────────────────────────────────

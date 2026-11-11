@@ -47,7 +47,7 @@ export async function readDocument(id: number) {
   return { ...row, content: await fs.readFile(await filePath(row.category, row.title), 'utf8') };
 }
 
-type Input = { category?: string; title?: string; content?: string };
+type Input = { category?: string; title?: string; file?: Buffer };
 export async function mutateDocument(action: '등록' | '수정' | '삭제', userId: number, id: number | undefined, input: Input) {
   const undo: Array<() => Promise<unknown>> = [];
   const garbage: string[] = [];
@@ -60,8 +60,8 @@ export async function mutateDocument(action: '등록' | '수정' | '삭제', use
       if (action !== '삭제') {
         const category = input.category ?? old!.category;
         const title = input.title ?? old!.title;
-        const content = input.content ?? await fs.readFile(await filePath(old!.category, old!.title), 'utf8');
-        const data = { category, title, size: Buffer.byteLength(content, 'utf8') };
+        const file = input.file ?? await fs.readFile(await filePath(old!.category, old!.title));
+        const data = { category, title, size: file.length };
         row = action === '등록'
           ? await tx.mkbrd.create({ data })
           : await tx.mkbrd.update({ where: { id }, data });
@@ -77,7 +77,7 @@ export async function mutateDocument(action: '등록' | '수정' | '삭제', use
         }
         const temp = path.join(await directory(category), `.mkbrd-${randomUUID()}.tmp`);
         garbage.push(temp);
-        await fs.writeFile(temp, content, { encoding: 'utf8', flag: 'wx' });
+        await fs.writeFile(temp, file, { flag: 'wx' });
         if (source) {
           const backup = `${source}.${randomUUID()}.bak`;
           await fs.rename(source, backup);
