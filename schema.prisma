@@ -41,7 +41,7 @@ model User {
   @@map("users")
 }
 
-// Markdown 파일의 메타데이터만 저장한다. 본문은 프로젝트 mkbrd/ 아래 파일로 저장한다.
+// 문서 메타데이터만 저장한다. 파일: mkbrd/<카테고리>/<확장자 제외 문서명>/<파일명>, 이미지: 같은 폴더/image/
 model Mkbrd {
   id        Int      @id @default(autoincrement())
   category  String   @db.VarChar(10)

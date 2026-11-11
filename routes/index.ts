@@ -11,7 +11,7 @@ import {
 import { getStats } from '../controllers/statsController';
 import { signup, login, logout, me } from '../controllers/authController';
 
-import { getDocuments, getDocument, createDocument, updateDocument, deleteDocument } from '../controllers/mkbrdController';
+import { getDocuments, getDocument, getDocumentImage, createDocument, updateDocument, deleteDocument } from '../controllers/mkbrdController';
 
 import { documentUpload } from '../middleware/mkbrdUpload';
 
@@ -19,6 +19,7 @@ const router = Router();
 
 router.get('/mkbrd', getDocuments);
 router.get('/mkbrd/:id', getDocument);
+router.get('/mkbrd/:id/image/*', getDocumentImage);
 router.post('/mkbrd', documentUpload, createDocument);
 router.put('/mkbrd/:id', documentUpload, updateDocument);
 router.delete('/mkbrd/:id', deleteDocument);

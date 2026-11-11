@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { TextDecoder } from 'util';
 import prisma from '../config/prisma';
-import { BoardError, categories, mutateDocument, readDocument, serialize } from '../services/mkbrdService';
+import { BoardError, categories, mutateDocument, readDocument, readImage, serialize } from '../services/mkbrdService';
 
 function integer(value: unknown, name: string, max = 2147483647): number {
   if (typeof value !== 'string' || !/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) > max) {
@@ -14,28 +14,32 @@ function category(value: unknown) {
 }
 function validate(req: Request, creating: boolean) {
   const body = req.body ?? {};
+  const files = req.files as { [field: string]: Express.Multer.File[] } | undefined;
+  const document = files?.file?.[0];
+  const images = files?.images?.[0];
   if (Object.keys(body).some(key => key !== 'category')) {
-    throw new BoardError(400, 'category와 file 필드만 전송할 수 있습니다. 제목은 업로드 파일명을 사용합니다.');
+    throw new BoardError(400, 'category, file, images 필드만 전송할 수 있습니다. 제목은 업로드 파일명을 사용합니다.');
   }
   if (creating || body.category !== undefined) category(body.category);
-  if (creating && !req.file) throw new BoardError(400, 'Markdown 파일(file)을 업로드해 주세요.');
-  if (!creating && !req.file && body.category === undefined) throw new BoardError(400, '카테고리 또는 새 파일을 전송해 주세요.');
+  if (creating && !document) throw new BoardError(400, 'Markdown 파일(file)을 업로드해 주세요.');
+  if (!creating && !document && !images && body.category === undefined) throw new BoardError(400, '카테고리, 새 문서 파일 또는 이미지 ZIP을 전송해 주세요.');
   let title: string | undefined;
-  if (req.file) {
-    title = req.file.originalname;
+  if (document) {
+    title = document.originalname;
     if (!title.endsWith('.md') || title.trim() !== title ||
       Buffer.byteLength(title, 'utf8') > 240 || /[<>:"/\\|?*\x00-\x1f\x7f]/.test(title) ||
-      title.startsWith('.') || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])\./i.test(title)) {
+      title.startsWith('.') || title.slice(0, -3).trim() !== title.slice(0, -3) || title.slice(0, -3).endsWith('.') || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])\./i.test(title)) {
       throw new BoardError(400, '파일명은 경로 문자가 없는 240바이트 이하의 .md 파일명이어야 합니다.');
     }
     try {
-      new TextDecoder('utf-8', { fatal: true }).decode(req.file.buffer);
-      if (req.file.buffer.includes(0)) throw new Error('binary file');
+      new TextDecoder('utf-8', { fatal: true }).decode(document.buffer);
+      if (document.buffer.includes(0)) throw new Error('binary file');
     } catch {
       throw new BoardError(400, 'UTF-8 형식의 Markdown 파일만 업로드할 수 있습니다.');
     }
   }
-  return { category: body.category, title, file: req.file?.buffer };
+  if (images && !images.originalname.toLowerCase().endsWith('.zip')) throw new BoardError(400, '이미지는 ZIP 파일(images)로 업로드해 주세요.');
+  return { category: body.category, title, file: document?.buffer, images: images?.buffer };
 }
 function fail(res: Response, error: any) {
   if (error instanceof BoardError) return res.status(error.status).json({ success: false, message: error.message });
@@ -63,6 +67,19 @@ export const getDocument = async (req: Request, res: Response) => {
   try {
     const id = integer(req.params.id, 'id');
     return res.json({ success: true, data: await serialize(() => readDocument(id)) });
+  } catch (err) { return fail(res, err); }
+};
+export const getDocumentImage = async (req: Request, res: Response) => {
+  try {
+    const id = integer(req.params.id, 'id');
+    const image = await serialize(() => readImage(id, req.params[0]));
+    res.set({
+      'Content-Type': image.contentType,
+      'X-Content-Type-Options': 'nosniff',
+      'Content-Security-Policy': "sandbox; default-src 'none'; style-src 'unsafe-inline'",
+      'Cache-Control': 'no-cache',
+    });
+    return res.send(image.data);
   } catch (err) { return fail(res, err); }
 };
 function mutation(action: '등록' | '수정' | '삭제') {
