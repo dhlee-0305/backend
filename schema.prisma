@@ -41,6 +41,30 @@ model User {
   @@map("users")
 }
 
+model Mkbrd {
+  id        Int      @id @default(autoincrement())
+  category  String   @db.VarChar(10)
+  title     String   @db.VarChar(255)
+  size      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, title])
+  @@map("mkbrd")
+}
+
+// 문서 삭제 이후에도 감사 이력을 유지하므로 문서 FK를 설정하지 않는다.
+model MkbrdHist {
+  id         Int      @id @default(autoincrement())
+  documentId Int
+  userId     Int
+  action     String   @db.VarChar(10)
+  createdAt  DateTime @default(now())
+
+  @@index([documentId, createdAt])
+  @@map("mkbrd_hist")
+}
+
 // ─────────────────────────────────────────
 // 로그인 시도 내역
 // ─────────────────────────────────────────

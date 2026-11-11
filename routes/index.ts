@@ -11,7 +11,15 @@ import {
 import { getStats } from '../controllers/statsController';
 import { signup, login, logout, me } from '../controllers/authController';
 
+import { getDocuments, getDocument, createDocument, updateDocument, deleteDocument } from '../controllers/mkbrdController';
+
 const router = Router();
+
+router.get('/mkbrd', getDocuments);
+router.get('/mkbrd/:id', getDocument);
+router.post('/mkbrd', createDocument);
+router.put('/mkbrd/:id', updateDocument);
+router.delete('/mkbrd/:id', deleteDocument);
 
 // ─── 도서 API ─────────────────────────────────────────────────
 router.get('/books', getBooks);

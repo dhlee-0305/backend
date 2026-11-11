@@ -24,3 +24,5 @@ mnt/
 
 # graphify
 graphify-out/
+# Markdown 문서 저장소
+/mkbrd/
