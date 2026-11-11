@@ -74,7 +74,20 @@ export async function readDocument(id: number) {
   const row = await prisma.mkbrd.findUnique({ where: { id } });
   if (!row) throw new BoardError(404, '문서를 찾을 수 없습니다.');
   const source = await sourceDocument(row.category, row.title);
-  return { ...row, content: await fs.readFile(source.file, 'utf8'), imageBaseUrl: `/api/mkbrd/${id}/image/` };
+  const registration = await prisma.mkbrdHist.findFirst({
+    where: { documentId: id, action: '등록' },
+    orderBy: { id: 'asc' },
+    select: { userId: true },
+  });
+  const author = registration
+    ? await prisma.user.findUnique({ where: { id: registration.userId }, select: { email: true } })
+    : null;
+  return {
+    ...row,
+    content: await fs.readFile(source.file, 'utf8'),
+    imageBaseUrl: `/api/mkbrd/${id}/image/`,
+    authorEmail: author?.email ?? null,
+  };
 }
 export async function readImage(id: number, name: string) {
   const parts = imagePathParts(name);

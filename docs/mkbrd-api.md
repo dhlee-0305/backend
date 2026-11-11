@@ -135,6 +135,9 @@ GET /api/mkbrd/1
 |------|------|------|------|------|
 | `content` | string | required | Markdown 본문 | `# 안내` |
 | `imageBaseUrl` | string | required | 이미지 조회 기본 URL | `/api/mkbrd/1/image/` |
+| `authorEmail` | string 또는 null | required | 최초 등록 이력의 사용자 ID로 User(`users`) 테이블에서 조회한 작성자 이메일. 등록 이력 또는 사용자가 없으면 null | `author@example.com` |
+
+작성자는 `mkbrd_hist`의 `action = 등록`인 이력 중 ID가 가장 작은 기록의 `userId`로 판별한다. 수정자의 ID나 현재 조회 사용자의 ID를 사용하지 않으며, 사용자 이메일이 변경되면 현재 이메일을 반환한다. 이메일은 상세 응답에만 포함된다.
 
 **Error**
 
@@ -157,7 +160,8 @@ GET /api/mkbrd/1
     "createdAt": "2026-11-11T00:00:00.000Z",
     "updatedAt": "2026-11-11T00:00:00.000Z",
     "content": "# 안내",
-    "imageBaseUrl": "/api/mkbrd/1/image/"
+    "imageBaseUrl": "/api/mkbrd/1/image/",
+    "authorEmail": "author@example.com"
   }
 }
 ```

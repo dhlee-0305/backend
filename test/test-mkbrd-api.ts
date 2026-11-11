@@ -33,9 +33,16 @@ jest.mock('../config/prisma', () => {
       return row;
     }),
   };
-  const history = { create: jest.fn(async ({ data }) => { histories.push(data); return data; }) };
+  const history = {
+    create: jest.fn(async ({ data }) => { histories.push(data); return data; }),
+    findFirst: jest.fn(async ({ where }) => histories.find(r => match(r, where)) || null),
+  };
+  const findAuthor = async ({ where }: any) => [7, 8].includes(where.id)
+    ? { email: where.id === 7 ? 'author@example.com' : 'editor@example.com' }
+    : null;
+  const user = { findUnique: jest.fn(findAuthor) };
   const db: any = {
-    mkbrd: board, mkbrdHist: history,
+    mkbrd: board, mkbrdHist: history, user,
     $transaction: async (work: any) => {
       if (typeof work !== 'function') return Promise.all(work);
       const snapshot = [...rows];
@@ -44,6 +51,8 @@ jest.mock('../config/prisma', () => {
     },
     reset: () => {
       rows = []; histories = [];
+      history.findFirst.mockReset().mockImplementation(async ({ where }) => histories.find(r => match(r, where)) || null);
+      user.findUnique.mockReset().mockImplementation(findAuthor);
       history.create.mockReset().mockImplementation(async ({ data }) => { histories.push(data); return data; });
     },
     history: () => histories,
@@ -66,7 +75,7 @@ beforeAll(async () => {
   app = express();
   app.use(express.json());
   app.use((req, _res, next) => {
-    (req as any).session = req.headers['x-test-user'] ? { userId: 7 } : {};
+    (req as any).session = req.headers['x-test-user'] ? { userId: Number(req.headers['x-test-user']) } : {};
     next();
   });
   app.use('/api', router);
@@ -432,4 +441,48 @@ it('ZIP 일부를 해제한 뒤 무결성 오류가 나도 기존 이미지 유�
   expect(await fs.readdir(imageFolder())).toEqual(['그림.png']);
   expect(await fs.readdir(path.join(root, 'AI'))).toEqual(['안내']);
   expect(db.history()).toHaveLength(1);
+});
+
+
+it('공개 상세 응답에 등록 이력의 사용자 ID로 조회한 작성자 이메일만 포함', async () => {
+  const { id } = (await create()).body.data;
+  const response = await request(app).get(`/api/mkbrd/${id}`);
+  expect(response.status).toBe(200);
+  expect(response.body.data.authorEmail).toBe('author@example.com');
+  expect(db.mkbrdHist.findFirst).toHaveBeenCalledWith({
+    where: { documentId: id, action: '등록' }, orderBy: { id: 'asc' }, select: { userId: true },
+  });
+  expect(db.user.findUnique).toHaveBeenCalledWith({ where: { id: 7 }, select: { email: true } });
+  expect(response.body.data).not.toHaveProperty('password');
+  expect(response.body.data).not.toHaveProperty('user');
+  const list = await request(app).get('/api/mkbrd');
+  expect(list.body.data[0]).not.toHaveProperty('authorEmail');
+});
+
+it('다른 사용자가 수정해도 최초 작성자의 이메일을 반환', async () => {
+  const { id } = (await create()).body.data;
+  const updated = await request(app).put(`/api/mkbrd/${id}`).set('x-test-user', '8')
+    .attach('file', Buffer.from('수정 본문'), '수정.md');
+  expect(updated.status).toBe(200);
+  expect(db.history().map((h: any) => h.userId)).toEqual([7, 8]);
+  expect((await request(app).get(`/api/mkbrd/${id}`)).body.data.authorEmail).toBe('author@example.com');
+});
+
+it('작성자가 삭제된 경우 이메일을 null로 반환하고 상세는 정상 조회', async () => {
+  const { id } = (await create()).body.data;
+  db.user.findUnique.mockResolvedValueOnce(null);
+  const response = await request(app).get(`/api/mkbrd/${id}`);
+  expect(response.status).toBe(200);
+  expect(response.body.data.authorEmail).toBeNull();
+  expect(response.body.data.content).toBe(input.content);
+});
+
+it('등록 이력이 없는 기존 문서는 이메일을 null로 반환', async () => {
+  const row = await db.mkbrd.create({ data: { category: 'AI', title: input.title, size: Buffer.byteLength(input.content) } });
+  await fs.mkdir(path.join(root, 'AI'), { recursive: true });
+  await fs.writeFile(path.join(root, 'AI', input.title), input.content);
+  const response = await request(app).get(`/api/mkbrd/${row.id}`);
+  expect(response.status).toBe(200);
+  expect(response.body.data.authorEmail).toBeNull();
+  expect(db.user.findUnique).not.toHaveBeenCalled();
 });
